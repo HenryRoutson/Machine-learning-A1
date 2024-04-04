@@ -1,0 +1,5 @@
+setup git
+visualise the data with matplot
+write knn
+outline basic answers for problems in written part
+
