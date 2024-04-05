@@ -1,5 +1,5 @@
 
-https://colab.research.google.com/github/HenryRoutson/Machine-learning-A1/blob/main/COMP30027_2024_asst1_template.ipynb
+open py file in idle for some reason other locations aren't working
 
 
 
