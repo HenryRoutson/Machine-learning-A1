@@ -56,12 +56,19 @@ quality = 11
 # 
 
 
+def distance_euclidean(A : list[any], B : list[any]) -> float :
+    assert(len(A) == len(B))
+    return sum([(t[0] - t[1])**2 for t in zip(A, B) ])**0.5
+    
+  # could use scipy.spatial.distance.euclidean(A, B) for performance 
 
-with open(TEST_PATH, 'r') as file:
-    reader = csv.reader(file)
+assert(distance_euclidean([1], [2]) == 1.0)
 
-    for A in reader:
-        for B in reader : 
-            print(scipy.spatial.distance.euclidean(A, B))
 
+import numpy as np
+ 
+# using loadtxt()
+arr = np.loadtxt(TRAIN_PATH,
+                 delimiter=",", dtype=str)
+print(arr)
 
