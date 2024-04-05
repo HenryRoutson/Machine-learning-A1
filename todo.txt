@@ -1,9 +1,10 @@
 
-open py file in idle for some reason other locations aren't working
+RUN
+  python3 main.py
 
 
 
-
+look at dataset data types
 write knn
 visualise the data with matplot
 outline basic answers for problems in written part
