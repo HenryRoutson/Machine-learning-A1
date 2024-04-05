@@ -60,15 +60,16 @@ def distance_euclidean(A : list[any], B : list[any]) -> float :
     assert(len(A) == len(B))
     return sum([(t[0] - t[1])**2 for t in zip(A, B) ])**0.5
     
-  # could use scipy.spatial.distance.euclidean(A, B) for performance 
-
 assert(distance_euclidean([1], [2]) == 1.0)
 
 
-import numpy as np
+
  
 # using loadtxt()
-arr = np.loadtxt(TRAIN_PATH,
-                 delimiter=",", dtype=str)
-print(arr)
+all_data = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
+
+
+for row in all_data :
+    for row2 in all_data :
+      print(distance_euclidean(row, row2))
 
