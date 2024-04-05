@@ -1,7 +1,5 @@
-
-import data
-write knn
+setup git
 visualise the data with matplot
-normalise
+write knn
 outline basic answers for problems in written part
 
