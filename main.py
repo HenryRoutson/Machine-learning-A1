@@ -64,20 +64,80 @@ def distance_euclidean(A : list[any], B : list[any]) -> float :
     
 assert(distance_euclidean([1], [2]) == 1.0)
 
-
-
- 
-# using loadtxt()
-training_data = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
-
+def instance_label(instance) :
+  assert(len(instance) == len(ATTRIBUTES))
+  return instance[-1]
 
 def instance_attributes(instance) :
   assert(len(instance) == len(ATTRIBUTES))
   return instance[::-1]
 
-def instance_label(instance) :
-  assert(len(instance) == len(ATTRIBUTES))
-  return instance[-1]
+
+def attribute_ranges(data) :
+   
+  for i, attrib in enumerate(ATTRIBUTES) :
+    attrib_data = [row[i] for row in data]
+    print(attrib, max(attrib_data) -min(attrib_data))
+
+def data_label_distrib(data) :
+  print(Counter([instance_label(row) for row in data]))
+
+
+def serperateLabelsLowHigh(data) :
+  return [ 
+   list(filter(lambda row : row[-1] == 0, data)),
+   list(filter(lambda row : row[-1] == 1, data))
+  ]
+
+def generate_all_graphs(data) :
+
+  [low, high] = serperateLabelsLowHigh(data)
+
+  for attrib_x_index, attrib_x in enumerate(ATTRIBUTES) :
+    for attrib_y_index, attrib_y in enumerate(ATTRIBUTES) :
+
+      fig, ax = plt.subplots()
+
+      x_high = high[attrib_x_index]
+      x_low = low[attrib_x_index]
+
+      y_high = high[attrib_y_index]
+      y_low = low[attrib_y_index]
+
+
+      # add in not high quality
+      ax.scatter(x_low, y_low, c='red', alpha=0.3, edgecolors='none')
+      
+      # add in high quality
+      ax.scatter(x_high, y_high, c="blue", alpha=0.3, edgecolors='none')
+      
+      plt.xlabel(attrib_x)
+      plt.ylabel(attrib_y)
+
+      plotTitle = attrib_x + "vs" + attrib_y
+      plt.title(plotTitle)
+      ax.legend()
+      ax.grid(True)
+
+      plt.savefig("graphs/"+plotTitle)
+
+
+
+def data_report(data) :
+  print()
+  data_label_distrib(data)
+  print()
+  attribute_ranges(data)
+  print()
+  generate_all_graphs(data)
+
+
+
+# using loadtxt()
+training_data = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
+data_report(training_data)
+
+
 
 def run_knn_return_label(test_instance : list[float], n : int) -> any :
 
@@ -91,13 +151,12 @@ def run_knn_return_label(test_instance : list[float], n : int) -> any :
     reverse=True
   )
 
-
   labels = [label for (distance, random, label) in most_similar_train_instances]
 
   labels_of_n_closest = labels[:n]
   most_common_label_of_n_closest = Counter(labels_of_n_closest).most_common()[0][0]
 
-  print(labels_of_n_closest, most_common_label_of_n_closest)
+  #print(labels_of_n_closest, most_common_label_of_n_closest)
 
   return most_common_label_of_n_closest
 
@@ -107,5 +166,5 @@ def run_knn_return_label(test_instance : list[float], n : int) -> any :
 # test each instance in the test data
 testing_data  = np.loadtxt(TEST_PATH,  delimiter=",", dtype=float, skiprows=1)
 for test_instance in testing_data :
-  run_knn_return_label(test_instance, 9)
+  run_knn_return_label(test_instance, 10)
 
