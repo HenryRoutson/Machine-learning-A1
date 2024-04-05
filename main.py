@@ -2,20 +2,18 @@
 import numpy as np
 import sklearn
 import matplotlib.pyplot as plt
+import csv
 
 
-x = np.linspace(0, 5, 100)
-y = x**2
-plt.plot(x, y)
-plt.xlabel("X-axis")
-plt.ylabel("Y-axis")
-plt.title("graph of $x^2$")
-plt.show()
+# import data
+# https://diveintopython.org/learn/file-handling/csv
 
 
+with open('COMP30027_2024_asst1_data/winequality-test.csv', 'r') as file:
+    reader = csv.reader(file)
+    for row in reader:
+        print(row)
 
-
-
-# import data 
+        
 
 # KNN 

@@ -3,7 +3,8 @@ open py file in idle for some reason other locations aren't working
 
 
 
-visualise the data with matplot
+
 write knn
+visualise the data with matplot
 outline basic answers for problems in written part
 
