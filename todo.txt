@@ -1,4 +1,8 @@
-setup git
+
+https://colab.research.google.com/github/HenryRoutson/Machine-learning-A1/blob/main/COMP30027_2024_asst1_template.ipynb
+
+
+
 visualise the data with matplot
 write knn
 outline basic answers for problems in written part
