@@ -1,5 +1,7 @@
-setup git
-visualise the data with matplot
+
+import data
 write knn
+visualise the data with matplot
+normalise
 outline basic answers for problems in written part
 
