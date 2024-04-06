@@ -3,6 +3,8 @@ RUN
   python3 main.py
 
 
+plot everything on a graph distribution
+
 why is everything identified as low quality 
 why are graphs wrong?
 

@@ -89,27 +89,30 @@ def serperateLabelsLowHigh(data) :
    list(filter(lambda row : row[-1] == 1, data))
   ]
 
-def generate_all_graphs(data) :
 
-  [low, high] = serperateLabelsLowHigh(data)
+
+
+def generate_all_scatterplots(data, data_name : str) :
+
+  [low_rows, high_rows] = serperateLabelsLowHigh(data)
 
   for attrib_x_index, attrib_x in enumerate(ATTRIBUTES) :
     for attrib_y_index, attrib_y in enumerate(ATTRIBUTES) :
 
       fig, ax = plt.subplots()
 
-      x_high = high[attrib_x_index]
-      x_low = low[attrib_x_index]
+      x_high = [row[attrib_x_index] for row in high_rows]
+      x_low = [row[attrib_x_index] for row in low_rows]
 
-      y_high = high[attrib_y_index]
-      y_low = low[attrib_y_index]
+      y_high = [row[attrib_y_index] for row in high_rows]
+      y_low =  [row[attrib_y_index] for row in low_rows]
 
 
       # add in not high quality
-      ax.scatter(x_low, y_low, c='red', alpha=0.3, edgecolors='none')
+      ax.scatter(x_low, y_low, c='red', alpha=0.3)
       
       # add in high quality
-      ax.scatter(x_high, y_high, c="blue", alpha=0.3, edgecolors='none')
+      ax.scatter(x_high, y_high, c="blue", alpha=0.3)
       
       plt.xlabel(attrib_x)
       plt.ylabel(attrib_y)
@@ -119,7 +122,46 @@ def generate_all_graphs(data) :
       ax.legend()
       ax.grid(True)
 
-      plt.savefig("graphs/"+plotTitle)
+      plt.savefig("graphs/"+data_name +"/"+plotTitle)
+
+
+
+
+
+
+def generate_all_distributions(data, data_name : str) :
+
+  [low_rows, high_rows] = serperateLabelsLowHigh(data)
+
+  for attrib_x_index, attrib_x in enumerate(ATTRIBUTES) :
+    for attrib_y_index, attrib_y in enumerate(ATTRIBUTES) :
+
+      fig, ax = plt.subplots()
+
+      x_high = [row[attrib_x_index] for row in high_rows]
+      x_low = [row[attrib_x_index] for row in low_rows]
+
+      y_high = [row[attrib_y_index] for row in high_rows]
+      y_low =  [row[attrib_y_index] for row in low_rows]
+
+
+      # add in not high quality
+      ax.scatter(x_low, y_low, c='red', alpha=0.3)
+      
+      # add in high quality
+      ax.scatter(x_high, y_high, c="blue", alpha=0.3)
+      
+      plt.xlabel(attrib_x)
+      plt.ylabel(attrib_y)
+
+      plotTitle = attrib_x + "vs" + attrib_y
+      plt.title(plotTitle)
+      ax.legend()
+      ax.grid(True)
+
+      plt.savefig("graphs/"+data_name +"/"+plotTitle)
+
+
 
 
 
@@ -129,14 +171,14 @@ def data_report(data) :
   print()
   attribute_ranges(data)
   print()
-  generate_all_graphs(data)
+  
 
 
 
 # using loadtxt()
 training_data = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
 data_report(training_data)
-
+generate_all_scatterplots(training_data, "train")
 
 
 def run_knn_return_label(test_instance : list[float], n : int) -> any :
@@ -163,8 +205,10 @@ def run_knn_return_label(test_instance : list[float], n : int) -> any :
   
 
 
-# test each instance in the test data
-testing_data  = np.loadtxt(TEST_PATH,  delimiter=",", dtype=float, skiprows=1)
-for test_instance in testing_data :
-  run_knn_return_label(test_instance, 10)
+def run_knn_on_test_data() :
+  testing_data  = np.loadtxt(TEST_PATH,  delimiter=",", dtype=float, skiprows=1)
+
+  # test each instance in the test data
+  for test_instance in testing_data :
+    print(run_knn_return_label(test_instance, 10))
 
