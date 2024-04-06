@@ -7,6 +7,8 @@ import csv
 import math
 import random
 from collections import Counter
+import pandas as pd
+from pandas import Series, DataFrame
 
 
 # import data
@@ -133,33 +135,22 @@ def generate_all_distributions(data, data_name : str) :
 
   [low_rows, high_rows] = serperateLabelsLowHigh(data)
 
-  for attrib_x_index, attrib_x in enumerate(ATTRIBUTES) :
-    for attrib_y_index, attrib_y in enumerate(ATTRIBUTES) :
+  for attrib_index, attrib in enumerate(ATTRIBUTES) :
 
-      fig, ax = plt.subplots()
+    high_values = [row[attrib_index] for row in high_rows]
+    low_values = [row[attrib_index] for row in low_rows]
 
-      x_high = [row[attrib_x_index] for row in high_rows]
-      x_low = [row[attrib_x_index] for row in low_rows]
+    # histogram looks weird
+    # plt.hist([high_values, low_values], bins=4, stacked=True, label=['high_values', 'low_values'], color=["red", "blue"])
 
-      y_high = [row[attrib_y_index] for row in high_rows]
-      y_low =  [row[attrib_y_index] for row in low_rows]
+    alpha = 0.05
+    plt.scatter(low_values, [0]*len(low_values), c="blue", alpha=alpha)
+    plt.scatter(high_values, [0]*len(high_values), c="red", alpha=alpha)
+
+    plt.savefig("distributions/"+data_name +"/"+attrib)
 
 
-      # add in not high quality
-      ax.scatter(x_low, y_low, c='red', alpha=0.3)
-      
-      # add in high quality
-      ax.scatter(x_high, y_high, c="blue", alpha=0.3)
-      
-      plt.xlabel(attrib_x)
-      plt.ylabel(attrib_y)
 
-      plotTitle = attrib_x + "vs" + attrib_y
-      plt.title(plotTitle)
-      ax.legend()
-      ax.grid(True)
-
-      plt.savefig("graphs/"+data_name +"/"+plotTitle)
 
 
 
@@ -178,8 +169,8 @@ def data_report(data) :
 # using loadtxt()
 training_data = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
 data_report(training_data)
-generate_all_scatterplots(training_data, "train")
-
+#generate_all_scatterplots(training_data, "train")
+generate_all_distributions(training_data, "train")
 
 def run_knn_return_label(test_instance : list[float], n : int) -> any :
 

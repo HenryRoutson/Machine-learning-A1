@@ -3,6 +3,9 @@ RUN
   python3 main.py
 
 
+graphs are still bugged, the ranges are not matching
+
+
 plot everything on a graph distribution
 
 why is everything identified as low quality 
