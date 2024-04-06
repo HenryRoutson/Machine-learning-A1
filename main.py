@@ -75,11 +75,18 @@ def instance_attributes(instance) :
   return instance[::-1]
 
 
-def attribute_ranges(data) :
+def attribute_distrib_summary(data) :
+
+  print()
    
   for i, attrib in enumerate(ATTRIBUTES) :
     attrib_data = [row[i] for row in data]
-    print(attrib, max(attrib_data) -min(attrib_data))
+    # print("range   ", attrib, max(attrib_data) -min(attrib_data))
+
+    print("max     ", attrib, max(attrib_data))
+    print("average ", attrib, sum(attrib_data) / len(attrib_data))
+    print("min     ", attrib, min(attrib_data))
+    print()
 
 def data_label_distrib(data) :
   print(Counter([instance_label(row) for row in data]))
@@ -92,7 +99,8 @@ def serperateLabelsLowHigh(data) :
   ]
 
 
-
+def get_column(rows, index) :
+  return [row[index] for row in rows]
 
 def generate_all_scatterplots(data, data_name : str) :
 
@@ -103,12 +111,11 @@ def generate_all_scatterplots(data, data_name : str) :
 
       fig, ax = plt.subplots()
 
-      x_high = [row[attrib_x_index] for row in high_rows]
-      x_low = [row[attrib_x_index] for row in low_rows]
+      x_high = get_column(high_rows, attrib_x_index)
+      x_low = get_column(low_rows, attrib_x_index)
 
-      y_high = [row[attrib_y_index] for row in high_rows]
-      y_low =  [row[attrib_y_index] for row in low_rows]
-
+      y_high = get_column(high_rows, attrib_y_index) 
+      y_low =  get_column(low_rows, attrib_y_index) 
 
       # add in not high quality
       ax.scatter(x_low, y_low, c='red', alpha=0.3)
@@ -137,8 +144,8 @@ def generate_all_distributions(data, data_name : str) :
 
   for attrib_index, attrib in enumerate(ATTRIBUTES) :
 
-    high_values = [row[attrib_index] for row in high_rows]
-    low_values = [row[attrib_index] for row in low_rows]
+    high_values = get_column(high_rows, attrib_index)
+    low_values = get_column(low_rows, attrib_index)
 
     # histogram looks weird
     # plt.hist([high_values, low_values], bins=4, stacked=True, label=['high_values', 'low_values'], color=["red", "blue"])
@@ -157,11 +164,13 @@ def generate_all_distributions(data, data_name : str) :
 
 
 def data_report(data) :
+  print("DATA REPORT START ========================")
   print()
   data_label_distrib(data)
   print()
-  attribute_ranges(data)
+  attribute_distrib_summary(data)
   print()
+  print("DATA REPORT END ========================")
   
 
 
@@ -170,7 +179,7 @@ def data_report(data) :
 training_data = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
 data_report(training_data)
 #generate_all_scatterplots(training_data, "train")
-generate_all_distributions(training_data, "train")
+#generate_all_distributions(training_data, "train")
 
 def run_knn_return_label(test_instance : list[float], n : int) -> any :
 
