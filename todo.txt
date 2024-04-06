@@ -3,6 +3,11 @@ RUN
   python3 main.py
 
 
+Fix histogram 
+  look at lower solution
+  https://stackoverflow.com/questions/23617129/matplotlib-how-to-make-two-histograms-have-the-same-bin-width
+
+
 graphs are still bugged, the ranges are not matching
 
 
