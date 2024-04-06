@@ -133,6 +133,10 @@ def generate_all_scatterplots(data, data_name : str) :
 
       plt.savefig("graphs/"+data_name +"/"+plotTitle)
 
+      plt.cla()
+      plt.clf()
+
+
 
 
 
@@ -184,7 +188,7 @@ def data_report(data) :
 training_data = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
 data_report(training_data)
 #generate_all_scatterplots(training_data, "train")
-generate_all_distributions(training_data, "train")
+#generate_all_distributions(training_data, "train")
 
 def run_knn_return_label(test_instance : list[float], n : int) -> any :
 
