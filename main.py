@@ -148,13 +148,18 @@ def generate_all_distributions(data, data_name : str) :
     low_values = get_column(low_rows, attrib_index)
 
     # histogram looks weird
-    # plt.hist([high_values, low_values], bins=4, stacked=True, label=['high_values', 'low_values'], color=["red", "blue"])
+    plt.cla()
+    plt.clf()
 
-    alpha = 0.05
-    plt.scatter(low_values, [0]*len(low_values), c="blue", alpha=alpha)
-    plt.scatter(high_values, [0]*len(high_values), c="red", alpha=alpha)
+    plt.xlabel(attrib)
+    plt.ylabel("frequency")
 
-    plt.savefig("distributions/"+data_name +"/"+attrib)
+    plt.hist([high_values, low_values], bins=20, label=['high_values', 'low_values'], color=["red", "blue"])
+    plt.savefig("hist_distributions/"+data_name +"/"+attrib)
+
+
+    plt.cla()
+    plt.clf()
 
 
 
@@ -179,7 +184,7 @@ def data_report(data) :
 training_data = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
 data_report(training_data)
 #generate_all_scatterplots(training_data, "train")
-#generate_all_distributions(training_data, "train")
+generate_all_distributions(training_data, "train")
 
 def run_knn_return_label(test_instance : list[float], n : int) -> any :
 
