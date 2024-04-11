@@ -4,7 +4,8 @@ RUN
 
 
 
-why is everything identified as low quality 
+how to create a confusion matrix in matplot lib
+
 why are graphs wrong?
 
 outline basic answers for problems in written part

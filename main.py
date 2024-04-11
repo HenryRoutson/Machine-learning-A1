@@ -220,6 +220,25 @@ def run_knn_on_test_data() :
 
   # test each instance in the test data
   for test_instance in testing_data :
-    print(run_knn_return_label(test_instance, 10))
+    predicted_label = run_knn_return_label(test_instance, 10)
+    actual_label = instance_label(test_instance)
+    print(predicted_label == actual_label, predicted_label, actual_label)
+
+
+
+def check_accuracy(data, prediction_function) :
+  testing_data  = np.loadtxt(TEST_PATH,  delimiter=",", dtype=float, skiprows=1)
+
+  # TODO create confusion matrix
+
+
+  # test each instance in the test data
+  for test_instance in testing_data :
+    predicted_label = run_knn_return_label(test_instance, 10)
+    actual_label = instance_label(test_instance)
+    print(predicted_label == actual_label, predicted_label, actual_label)
+
+
+  pass
 
 run_knn_on_test_data()
