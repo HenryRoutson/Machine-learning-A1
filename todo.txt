@@ -5,6 +5,8 @@ RUN
 
 
 how to create a confusion matrix in matplot lib
+  from sklearn.metrics import confusion_matrix
+  
 
 why are graphs wrong?
 

@@ -9,6 +9,8 @@ import random
 from collections import Counter
 import pandas as pd
 from pandas import Series, DataFrame
+from sklearn.metrics import confusion_matrix
+import seaborn as sn
 
 
 # import data
@@ -226,19 +228,31 @@ def run_knn_on_test_data() :
 
 
 
-def check_accuracy(data, prediction_function) :
+def check_accuracy() :
   testing_data  = np.loadtxt(TEST_PATH,  delimiter=",", dtype=float, skiprows=1)
 
-  # TODO create confusion matrix
-
-
   # test each instance in the test data
-  for test_instance in testing_data :
-    predicted_label = run_knn_return_label(test_instance, 10)
-    actual_label = instance_label(test_instance)
-    print(predicted_label == actual_label, predicted_label, actual_label)
+  predicted = [ run_knn_return_label(test_instance, 10) for test_instance in testing_data ]
+  actual = [ instance_label(test_instance) for test_instance in testing_data ]
+    
+  labels=[["low quality actual", "high quality actual"], ["low quality predicted", "high quality predicted"]]
+  actual = [1,2]
+  predicted = [3,4]
+  conf = confusion_matrix(actual, predicted)
 
+  # https://stackoverflow.com/questions/35572000/how-can-i-plot-a-confusion-matrix
+
+  plt.cla()
+  plt.clf()
+
+  plt.figure(figsize = (10,7))
+  sn.heatmap(conf, annot=True, fmt=".0f")
+  plt.show()
+
+  plt.cla()
+  plt.clf()
 
   pass
 
-run_knn_on_test_data()
+
+check_accuracy()
