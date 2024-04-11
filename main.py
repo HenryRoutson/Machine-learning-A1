@@ -58,13 +58,15 @@ quality = 11
 
 
 # 
+import math
 
 
 def distance_euclidean(A : list[any], B : list[any]) -> float :
     assert(len(A) == len(B))
-    return sum([(t[0] - t[1])**2 for t in zip(A, B) ])**0.5
-    
-assert(distance_euclidean([1], [2]) == 1.0)
+    return math.sqrt(sum([math.pow((t[0] - t[1]), 2) for t in zip(A, B) ]))
+
+print(distance_euclidean([60], [42]))
+assert(distance_euclidean([60], [42]) == 18.0)
 
 def instance_label(instance) :
   assert(len(instance) == len(ATTRIBUTES))
@@ -195,14 +197,13 @@ def run_knn_return_label(test_instance : list[float], n : int) -> any :
   most_similar_train_instances = sorted([
       (
         distance_euclidean(instance_attributes(train_instance), test_instance),
-        random.randint(1, 1000000), # don't sort based on label
         instance_label(train_instance)
       ) 
       for train_instance in training_data ], 
-    reverse=True
+    key = lambda x : x[0]
   )
 
-  labels = [label for (distance, random, label) in most_similar_train_instances]
+  labels = [label for (distance, label) in most_similar_train_instances]
 
   labels_of_n_closest = labels[:n]
   most_common_label_of_n_closest = Counter(labels_of_n_closest).most_common()[0][0]
@@ -221,3 +222,4 @@ def run_knn_on_test_data() :
   for test_instance in testing_data :
     print(run_knn_return_label(test_instance, 10))
 
+run_knn_on_test_data()
