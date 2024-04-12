@@ -11,7 +11,7 @@ import pandas as pd
 from pandas import Series, DataFrame
 from sklearn.metrics import confusion_matrix
 import seaborn as sn
-
+import random
 
 # import data
 # https://diveintopython.org/learn/file-handling/csv
@@ -194,25 +194,29 @@ data_report(training_data)
 #generate_all_scatterplots(training_data, "train")
 #generate_all_distributions(training_data, "train")
 
-def run_knn_return_label(test_instance : list[float], n : int) -> any :
+def run_knn_return_label(test_instance : list[float], k : int) -> any :
 
-  most_similar_train_instances = sorted([
+  instance_distance_to_label_array = [
       (
         distance_euclidean(instance_attributes(train_instance), test_instance),
         instance_label(train_instance)
       ) 
-      for train_instance in training_data ], 
-    key = lambda x : x[0]
+      for train_instance in training_data ]
+
+
+  random.shuffle(instance_distance_to_label_array)
+
+  most_similar_train_instances = sorted(
+    instance_distance_to_label_array, # randmise order
+    key = lambda x : x[0] # sort only by distance, not by label
   )
 
   labels = [label for (distance, label) in most_similar_train_instances]
 
-  labels_of_n_closest = labels[:n]
-  most_common_label_of_n_closest = Counter(labels_of_n_closest).most_common()[0][0]
+  labels_of_k_closest = labels[:k]
+  most_common_label_of_k_closest = Counter(labels_of_k_closest).most_common()[0][0]
 
-  #print(labels_of_n_closest, most_common_label_of_n_closest)
-
-  return most_common_label_of_n_closest
+  return most_common_label_of_k_closest
 
   
 
