@@ -235,24 +235,34 @@ def check_accuracy() :
   predicted = [ run_knn_return_label(test_instance, 10) for test_instance in testing_data ]
   actual = [ instance_label(test_instance) for test_instance in testing_data ]
     
-  labels=[["low quality actual", "high quality actual"], ["low quality predicted", "high quality predicted"]]
-  actual = [1,2]
-  predicted = [3,4]
   conf = confusion_matrix(actual, predicted)
+
+
+  accur = sum(conf[i][i] for i in range(len(conf))) / sum(sum(x) for x in conf)
+  print("ACCURACY : " + str(accur))
+
 
   # https://stackoverflow.com/questions/35572000/how-can-i-plot-a-confusion-matrix
 
   plt.cla()
   plt.clf()
 
+
   plt.figure(figsize = (10,7))
+
+  # on the side is actual
+  # on the bottom is predicted
+
   sn.heatmap(conf, annot=True, fmt=".0f")
-  plt.show()
+  plt.savefig("conf")
 
   plt.cla()
   plt.clf()
 
-  pass
+
+
+
+
 
 
 check_accuracy()
