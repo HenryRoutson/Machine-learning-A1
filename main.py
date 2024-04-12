@@ -269,4 +269,24 @@ def check_accuracy() :
 
 
 
-check_accuracy()
+#check_accuracy()
+
+
+
+
+
+
+
+def scaleRange0To1(ls) :
+  max_ls = max(ls)
+  min_ls = min(ls)
+  range_ls = max_ls - min_ls
+
+  return [(x - min_ls) / range_ls for x in ls] 
+
+
+assert(scaleRange0To1([0,10]) == [0,1])
+
+
+
+
