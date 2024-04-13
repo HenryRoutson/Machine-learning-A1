@@ -318,11 +318,9 @@ distribution_scaled_training_data = scaleColumns(TRAINING_DATA, distribution_sca
 distribution_scaled_test_data = scaleColumns(TESTING_DATA, distribution_scale)
 
 # generate graphs
-"""
 generate_all_distributions(TRAINING_DATA, "unscaled_training_data")
 generate_all_distributions(min_max_scaled_training_data, "min_max_scaled_training_data")
 generate_all_distributions(distribution_scaled_training_data, "distribution_scaled_training_data")
-"""
 
 # accuracy calculations
 check_accuracy(lambda instnace : predict_with_knn(instnace, 1, TRAINING_DATA), TESTING_DATA, "knn_accuracy") 

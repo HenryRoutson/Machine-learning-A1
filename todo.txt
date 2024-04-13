@@ -5,6 +5,9 @@ RUN
 
 
 
+distributions are wrong for dist scaled
+
+
 imrpove code quality
 
 
