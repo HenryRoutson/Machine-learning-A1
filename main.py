@@ -3,8 +3,6 @@ import numpy as np
 import sklearn
 import scipy
 import matplotlib.pyplot as plt
-import csv
-import math
 import random
 from collections import Counter
 import pandas as pd
@@ -12,12 +10,18 @@ from pandas import Series, DataFrame
 from sklearn.metrics import confusion_matrix
 import seaborn as sn
 import random
+import math
 
-# import data
-# https://diveintopython.org/learn/file-handling/csv
+
+
+####################################################################################################################################
+# Constants
 
 TEST_PATH = 'COMP30027_2024_asst1_data/winequality-test.csv'
 TRAIN_PATH = 'COMP30027_2024_asst1_data/winequality-train.csv'
+
+TRAINING_DATA = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
+TESTING_DATA  = np.loadtxt(TEST_PATH,  delimiter=",", dtype=float, skiprows=1)
 
 ATTRIBUTES = [
     'fixedAcidity',
@@ -50,18 +54,13 @@ alcohol = 10
 quality = 11
 
 
-        
-
-# KNN
-
-# create index constants
+LOW_QUALITY = 0
+HIGH_QUALITY = 1
 
 
 
-
-# 
-import math
-
+####################################################################################################################################
+# Functions
 
 def distance_euclidean(A : list[any], B : list[any]) -> float :
     assert(len(A) == len(B))
@@ -98,8 +97,8 @@ def data_label_distrib(data) :
 
 def serperateLabelsLowHigh(data) :
   return [ 
-   list(filter(lambda row : row[-1] == 0, data)),
-   list(filter(lambda row : row[-1] == 1, data))
+   list(filter(lambda row : row[-1] == LOW_QUALITY, data)),
+   list(filter(lambda row : row[-1] == LOW_QUALITY, data))
   ]
 
 
@@ -186,11 +185,10 @@ def data_report(data) :
   print("DATA REPORT END ========================")
   
 
+# TODO write code to generate all plots with normalisation and such
 
 
-# using loadtxt()
-training_data = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
-data_report(training_data)
+
 #generate_all_scatterplots(training_data, "train")
 #generate_all_distributions(training_data, "train")
 
@@ -201,7 +199,7 @@ def run_knn_return_label(test_instance : list[float], k : int) -> any :
         distance_euclidean(instance_attributes(train_instance), test_instance),
         instance_label(train_instance)
       ) 
-      for train_instance in training_data ]
+      for train_instance in TRAINING_DATA ]
 
 
   random.shuffle(instance_distance_to_label_array)
@@ -222,11 +220,12 @@ def run_knn_return_label(test_instance : list[float], k : int) -> any :
 
 
 def run_knn_on_test_data() :
-  testing_data  = np.loadtxt(TEST_PATH,  delimiter=",", dtype=float, skiprows=1)
-  testing_data = scaleMatrixZeroToOne(testing_data)
+
+  # TODO generalise
+  norm_testing_data = scaleMatrixZeroToOne(TESTING_DATA)
 
   # test each instance in the test data
-  for test_instance in testing_data :
+  for test_instance in norm_testing_data :
     predicted_label = run_knn_return_label(test_instance, 10)
     actual_label = instance_label(test_instance)
     print(predicted_label == actual_label, predicted_label, actual_label)
@@ -234,11 +233,10 @@ def run_knn_on_test_data() :
 
 
 def check_accuracy() :
-  testing_data  = np.loadtxt(TEST_PATH,  delimiter=",", dtype=float, skiprows=1)
 
   # test each instance in the test data
-  predicted = [ run_knn_return_label(test_instance, 10) for test_instance in testing_data ]
-  actual = [ instance_label(test_instance) for test_instance in testing_data ]
+  predicted = [ run_knn_return_label(test_instance, 10) for test_instance in TESTING_DATA ]
+  actual = [ instance_label(test_instance) for test_instance in TESTING_DATA ]
     
   conf = confusion_matrix(actual, predicted)
 
@@ -250,7 +248,7 @@ def check_accuracy() :
   # https://stackoverflow.com/questions/35572000/how-can-i-plot-a-confusion-matrix
 
   plt.cla()
-  plt.clf()
+  plt.clf() # TODO avoid this
 
 
   plt.figure(figsize = (10,7))
@@ -320,9 +318,9 @@ assert(scaleMatrixZeroToOne(np.array([[0,10],[5,5]])) == [[0.0,1.0],[1.0,0.0]])
 
 check_accuracy()
 
-training_data = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
-data_report(training_data) # TODO create single import at top of file
-generate_all_distributions(scaleMatrixZeroToOne(training_data), "noramlised_trainign_data")
+
+data_report(TRAINING_DATA) # TODO create single import at top of file
+generate_all_distributions(scaleMatrixZeroToOne(TRAINING_DATA), "noramlised_trainign_data")
 
 
 
@@ -340,3 +338,30 @@ def variance(ls : list[float]) :
 
 def standardDeviation(ls : list[float]) :
   return math.sqrt(variance(ls))
+
+
+
+
+
+
+
+
+
+####################################################################################################################################
+# Code to run
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+####################################################################################################################################
