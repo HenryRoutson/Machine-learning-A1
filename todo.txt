@@ -3,7 +3,7 @@ RUN
   python3 main.py
 
 
-
+why do old versions have a different confusion for normal knn?
 
 look at what gets classified differently between methods
 

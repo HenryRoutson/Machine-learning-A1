@@ -22,7 +22,9 @@ TEST_PATH = 'COMP30027_2024_asst1_data/winequality-test.csv'
 TRAIN_PATH = 'COMP30027_2024_asst1_data/winequality-train.csv'
 
 TRAINING_DATA = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
+
 TESTING_DATA  = np.loadtxt(TEST_PATH,  delimiter=",", dtype=float, skiprows=1)
+
 
 ATTRIBUTES = [
     'fixedAcidity',
@@ -74,6 +76,8 @@ assert(distance_euclidean([60], [42]) == 18.0)
 def instance_label(instance) -> label_t :
   assert(len(instance) == len(ATTRIBUTES))
   return instance[-1]
+
+ACTUAL_LABELS = [ instance_label(test_instance) for test_instance in TESTING_DATA ]
 
 def instance_attributes(instance) :
   assert(len(instance) == len(ATTRIBUTES))
@@ -146,7 +150,7 @@ def generate_all_scatterplots(data, data_name : str) :
 def generate_all_distributions(data, data_name : str) :
 
   [low_rows, high_rows] = serperateLabelsLowHigh(data)
-  
+
   #assert(len(low_rows) != 0)
   #assert(len(high_rows) != 0)
   #assert(instance_label(low_rows[0]) == LOW_QUALITY)
@@ -217,8 +221,7 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
 
   # test each instance in the test data
   predicted = [ predict_instance_label(test_instance) for test_instance in testing_data ]
-  actual = [ instance_label(test_instance) for test_instance in testing_data ]
-  conf = confusion_matrix(actual, predicted)
+  conf = confusion_matrix(ACTUAL_LABELS, predicted)
 
 
   accur = sum(conf[i][i] for i in range(len(conf))) / sum(sum(x) for x in conf)
@@ -242,6 +245,8 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
 
   plt.cla()
   plt.clf()
+
+  return predicted
 
 
 def min_max_scale(ls) :
@@ -328,15 +333,18 @@ generate_all_distributions(min_max_scaled_training_data, "min_max_scaled_trainin
 generate_all_distributions(distribution_scaled_training_data, "distribution_scaled_training_data")
 
 # accuracy calculations
-check_accuracy(lambda instnace : predict_with_knn(instnace, 1, TRAINING_DATA), TESTING_DATA, "knn_accuracy") 
-check_accuracy(lambda instnace : predict_with_knn(instnace, 1, min_max_scaled_training_data), min_max_scaled_test_data, "knn_with_min_max_normalisation") 
-check_accuracy(lambda instnace : predict_with_knn(instnace, 1, distribution_scaled_training_data), distribution_scaled_test_data, "knn_with_distribution_normalisation") 
+knn_predicted = \
+  check_accuracy(lambda instnace : predict_with_knn(instnace, 1, TRAINING_DATA), TESTING_DATA, "knn") 
+knn_with_min_max_normalisation_predicted = \
+  check_accuracy(lambda instnace : predict_with_knn(instnace, 1, min_max_scaled_training_data), min_max_scaled_test_data, "knn_with_min_max_normalisation") 
+knn_with_distribution_normalisation_predicted = \
+  check_accuracy(lambda instnace : predict_with_knn(instnace, 1, distribution_scaled_training_data), distribution_scaled_test_data, "knn_with_distribution_normalisation") 
 
 
 
 
+# TODO compare predicted
 
-# TODO define this list[list[float]]
 
 
 ####################################################################################################################################
