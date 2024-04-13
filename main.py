@@ -223,6 +223,7 @@ def run_knn_return_label(test_instance : list[float], k : int) -> any :
 
 def run_knn_on_test_data() :
   testing_data  = np.loadtxt(TEST_PATH,  delimiter=",", dtype=float, skiprows=1)
+  testing_data = scaleMatrixZeroToOne(testing_data)
 
   # test each instance in the test data
   for test_instance in testing_data :
@@ -297,12 +298,28 @@ def flip(arr) :
   return [getColum(arr, c) for c in range(len(arr[0]))]
 
 def scaleMatrixZeroToOne(matrix : np.array) :
-  print(matrix)
+
   matrix = flip(matrix)
   matrix = list(map(lambda row : scaleRange0To1(row), matrix))
+  """
+  for row in matrix:
+    for value in row :
+     assert(value >= 0)
+     assert(value <= 1)
+  """
   matrix = flip(matrix)
   return matrix
 
-scaled_matrix = scaleMatrixZeroToOne(np.array([[0,10],[5,5]]))
-print(scaled_matrix)
-assert(scaled_matrix == [[0.0,1.0],[1.0,0.0]])
+
+assert(scaleMatrixZeroToOne(np.array([[0,10],[5,5]])) == [[0.0,1.0],[1.0,0.0]])
+
+
+
+
+
+
+check_accuracy()
+
+training_data = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
+data_report(training_data) # TODO create single import at top of file
+generate_all_distributions(scaleMatrixZeroToOne(training_data), "noramlised_trainign_data")
