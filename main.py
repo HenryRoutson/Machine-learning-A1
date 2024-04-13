@@ -323,3 +323,20 @@ check_accuracy()
 training_data = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
 data_report(training_data) # TODO create single import at top of file
 generate_all_distributions(scaleMatrixZeroToOne(training_data), "noramlised_trainign_data")
+
+
+
+
+
+def mean(ls : list[float]) : 
+  # TODO is this the right formula
+  return sum(ls) / len(ls)
+
+
+def variance(ls : list[float]) : 
+  m = mean(ls)
+  return sum([math.pow((x - m), 2) / len(ls) for x in ls])
+
+
+def standardDeviation(ls : list[float]) :
+  return math.sqrt(variance(ls))
