@@ -11,6 +11,7 @@ from sklearn.metrics import confusion_matrix
 import seaborn as sn
 import random
 import math
+from typing import Callable
 
 
 
@@ -57,19 +58,21 @@ quality = 11
 LOW_QUALITY = 0
 HIGH_QUALITY = 1
 
+label_t = int
+
 
 
 ####################################################################################################################################
 # Functions
 
-def distance_euclidean(A : list[any], B : list[any]) -> float :
+def distance_euclidean(A : list[float], B : list[float]) -> float :
     assert(len(A) == len(B))
     return math.sqrt(sum([math.pow((t[0] - t[1]), 2) for t in zip(A, B) ]))
 
 print(distance_euclidean([60], [42]))
 assert(distance_euclidean([60], [42]) == 18.0)
 
-def instance_label(instance) :
+def instance_label(instance) -> label_t :
   assert(len(instance) == len(ATTRIBUTES))
   return instance[-1]
 
@@ -175,14 +178,16 @@ def data_report(data) :
   print("DATA REPORT END ========================")
 
 
-def run_knn_return_label(test_instance : list[float], k : int) -> any :
+
+
+def predict_with_knn(test_instance : list[float], k : int, train_data) -> int :
 
   instance_distance_to_label_array = [
       (
         distance_euclidean(instance_attributes(train_instance), test_instance),
         instance_label(train_instance)
       ) 
-      for train_instance in TRAINING_DATA ]
+      for train_instance in train_data ]
 
 
   random.shuffle(instance_distance_to_label_array)
@@ -200,7 +205,7 @@ def run_knn_return_label(test_instance : list[float], k : int) -> any :
   return most_common_label_of_k_closest
 
 
-def check_accuracy(predict_instance_label : function, testing_data : list) :
+def check_accuracy(predict_instance_label : Callable[[list[float]], int], testing_data , prediction_name : str) :
 
   # test each instance in the test data
   predicted = [ predict_instance_label(test_instance) for test_instance in testing_data ]
@@ -214,6 +219,7 @@ def check_accuracy(predict_instance_label : function, testing_data : list) :
 
 
   # https://stackoverflow.com/questions/35572000/how-can-i-plot-a-confusion-matrix
+
 
   plt.cla()
   plt.clf() # TODO avoid this
@@ -254,10 +260,10 @@ def distribution_scale(ls) :
 def getColum(arr, c : int) :
   return [ row[c] for row in arr]
 
-def flip(arr) :
+def flip(arr : list[list[float]]) :
   return [getColum(arr, c) for c in range(len(arr[0]))]
 
-def scaleMatrixZeroToOne(matrix : np.array, f : function) :
+def scaleMatrixZeroToOne(matrix : np.ndarray, f) :
 
   matrix = flip(matrix)
   matrix = list(map(f, matrix))
@@ -306,21 +312,29 @@ data_report(TRAINING_DATA)
 data_report(TESTING_DATA)
 """
 
+min_max_scaled_training_data = scaleMatrixZeroToOne(TRAINING_DATA, min_max_scale)
+min_max_scaled_test_data = scaleMatrixZeroToOne(TESTING_DATA, min_max_scale)
+
+distribution_scaled_training_data = scaleMatrixZeroToOne(TRAINING_DATA, distribution_scale)
+distribution_scaled_test_data = scaleMatrixZeroToOne(TESTING_DATA, distribution_scale)
 
 # generate graphs
 generate_all_distributions(TRAINING_DATA, "unscaled_training_data")
-generate_all_distributions(scaleMatrixZeroToOne(TRAINING_DATA, min_max_scale), "min_max_scaled_training_data")
-generate_all_distributions(scaleMatrixZeroToOne(TRAINING_DATA, distribution_scale), "distribution_scaled_training_data")
+generate_all_distributions(min_max_scaled_training_data, "min_max_scaled_training_data")
+generate_all_distributions(distribution_scaled_training_data, "distribution_scaled_training_data")
 
 #
-check_accuracy(run_knn_return_label, TESTING_DATA) # TODO add in normalisation
+check_accuracy(lambda instnace : predict_with_knn(instnace, 1, TRAINING_DATA), TESTING_DATA, "knn accuracy") # TODO add in normalisation
+check_accuracy(lambda instnace : predict_with_knn(instnace, 1, min_max_scaled_training_data), min_max_scaled_test_data, "knn with normalisation") # TODO add in normalisation
 
 
 
 
 
 
-
+# TODO define this list[list[float]]
 
 
 ####################################################################################################################################
+
+
