@@ -5,10 +5,8 @@ RUN
 
 
 
+imrpove code quality
 
-
-
-Create pages writeup 
 
 why are graphs wrong?
 

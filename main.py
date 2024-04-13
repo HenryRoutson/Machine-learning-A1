@@ -141,10 +141,6 @@ def generate_all_scatterplots(data, data_name : str) :
 
 
 
-
-
-
-
 def generate_all_distributions(data, data_name : str) :
 
   [low_rows, high_rows] = serperateLabelsLowHigh(data)
@@ -169,12 +165,6 @@ def generate_all_distributions(data, data_name : str) :
     plt.clf()
 
 
-
-
-
-
-
-
 def data_report(data) :
   print("DATA REPORT START ========================")
   print()
@@ -183,14 +173,7 @@ def data_report(data) :
   attribute_distrib_summary(data)
   print()
   print("DATA REPORT END ========================")
-  
 
-# TODO write code to generate all plots with normalisation and such
-
-
-
-#generate_all_scatterplots(training_data, "train")
-#generate_all_distributions(training_data, "train")
 
 def run_knn_return_label(test_instance : list[float], k : int) -> any :
 
@@ -216,27 +199,12 @@ def run_knn_return_label(test_instance : list[float], k : int) -> any :
 
   return most_common_label_of_k_closest
 
-  
 
-
-def run_knn_on_test_data() :
-
-  # TODO generalise
-  norm_testing_data = scaleMatrixZeroToOne(TESTING_DATA)
+def check_accuracy(predict_instance_label : function, testing_data : list) :
 
   # test each instance in the test data
-  for test_instance in norm_testing_data :
-    predicted_label = run_knn_return_label(test_instance, 10)
-    actual_label = instance_label(test_instance)
-    print(predicted_label == actual_label, predicted_label, actual_label)
-
-
-
-def check_accuracy() :
-
-  # test each instance in the test data
-  predicted = [ run_knn_return_label(test_instance, 10) for test_instance in TESTING_DATA ]
-  actual = [ instance_label(test_instance) for test_instance in TESTING_DATA ]
+  predicted = [ predict_instance_label(test_instance) for test_instance in testing_data ]
+  actual = [ instance_label(test_instance) for test_instance in testing_data ]
     
   conf = confusion_matrix(actual, predicted)
 
@@ -263,20 +231,7 @@ def check_accuracy() :
   plt.clf()
 
 
-
-
-
-
-
-#check_accuracy()
-
-
-
-
-
-
-
-def scaleRange0To1(ls) :
+def min_max_scale(ls) :
   max_ls = max(ls)
   min_ls = min(ls)
   range_ls = max_ls - min_ls
@@ -284,8 +239,15 @@ def scaleRange0To1(ls) :
   return [(x - min_ls) / range_ls for x in ls] 
 
 
-assert(scaleRange0To1([0,10]) == [0,1])
-assert(scaleRange0To1([5,10]) == [0,1])
+assert(min_max_scale([0,10]) == [0,1])
+assert(min_max_scale([5,10]) == [0,1])
+
+
+
+def distribution_scale(ls) :
+  # TODO
+
+  return ls
 
 
 
@@ -295,10 +257,10 @@ def getColum(arr, c : int) :
 def flip(arr) :
   return [getColum(arr, c) for c in range(len(arr[0]))]
 
-def scaleMatrixZeroToOne(matrix : np.array) :
+def scaleMatrixZeroToOne(matrix : np.array, f : function) :
 
   matrix = flip(matrix)
-  matrix = list(map(lambda row : scaleRange0To1(row), matrix))
+  matrix = list(map(f, matrix))
   """
   for row in matrix:
     for value in row :
@@ -309,20 +271,7 @@ def scaleMatrixZeroToOne(matrix : np.array) :
   return matrix
 
 
-assert(scaleMatrixZeroToOne(np.array([[0,10],[5,5]])) == [[0.0,1.0],[1.0,0.0]])
-
-
-
-
-
-
-check_accuracy()
-
-
-data_report(TRAINING_DATA) # TODO create single import at top of file
-generate_all_distributions(scaleMatrixZeroToOne(TRAINING_DATA), "noramlised_trainign_data")
-
-
+assert(scaleMatrixZeroToOne(np.array([[0,10],[5,5]]), min_max_scale) == [[0.0,1.0],[1.0,0.0]])
 
 
 
@@ -351,10 +300,20 @@ def standardDeviation(ls : list[float]) :
 # Code to run
 
 
+# quick data summaries
+"""
+data_report(TRAINING_DATA)
+data_report(TESTING_DATA)
+"""
 
 
+# generate graphs
+generate_all_distributions(TRAINING_DATA, "unscaled_training_data")
+generate_all_distributions(scaleMatrixZeroToOne(TRAINING_DATA, min_max_scale), "min_max_scaled_training_data")
+generate_all_distributions(scaleMatrixZeroToOne(TRAINING_DATA, distribution_scale), "distribution_scaled_training_data")
 
-
+#
+check_accuracy(run_knn_return_label, TESTING_DATA) # TODO add in normalisation
 
 
 
