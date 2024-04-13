@@ -201,6 +201,11 @@ def predict_with_knn(test_instance : list[float], k : int, train_data) -> int :
   labels_of_k_closest = labels[:k]
   most_common_label_of_k_closest = Counter(labels_of_k_closest).most_common()[0][0]
 
+  assert(
+    (most_common_label_of_k_closest == HIGH_QUALITY) or 
+    (most_common_label_of_k_closest == LOW_QUALITY) 
+  )
+
   return most_common_label_of_k_closest
 
 
@@ -210,7 +215,7 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
   predicted = [ predict_instance_label(test_instance) for test_instance in testing_data ]
   actual = [ instance_label(test_instance) for test_instance in testing_data ]
     
-  print(actual, predicted)
+  print(predicted)
   conf = confusion_matrix(actual, predicted)
 
 
