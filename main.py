@@ -250,12 +250,9 @@ assert(min_max_scale([5,10]) == [0,1])
 
 
 
-def distribution_scale(ls) :
-
-
+def distribution_scale(ls : list) :
   mean = sum(ls) / len(ls)
   stddev = standardDeviation(ls)
-
   return [(x - mean) / stddev for x in ls]
 
 
@@ -266,21 +263,17 @@ def getColum(arr, c : int) :
 def flip(arr : list[list[float]]) :
   return [getColum(arr, c) for c in range(len(arr[0]))]
 
-def scaleMatrixZeroToOne(matrix : np.ndarray, f) :
+def scaleColumns(matrix : np.ndarray, f) :
 
   matrix = flip(matrix)
   matrix = list(map(f, matrix))
-  """
-  for row in matrix:
-    for value in row :
-     assert(value >= 0)
-     assert(value <= 1)
-  """
   matrix = flip(matrix)
+
+
   return matrix
 
 
-assert(scaleMatrixZeroToOne(np.array([[0,10],[5,5]]), min_max_scale) == [[0.0,1.0],[1.0,0.0]])
+assert(scaleColumns(np.array([[0,10],[5,5]]), min_max_scale) == [[0.0,1.0],[1.0,0.0]])
 
 
 
@@ -315,11 +308,11 @@ data_report(TRAINING_DATA)
 data_report(TESTING_DATA)
 """
 
-min_max_scaled_training_data = scaleMatrixZeroToOne(TRAINING_DATA, min_max_scale)
-min_max_scaled_test_data = scaleMatrixZeroToOne(TESTING_DATA, min_max_scale)
+min_max_scaled_training_data = scaleColumns(TRAINING_DATA, min_max_scale)
+min_max_scaled_test_data = scaleColumns(TESTING_DATA, min_max_scale)
 
-distribution_scaled_training_data = scaleMatrixZeroToOne(TRAINING_DATA, distribution_scale)
-distribution_scaled_test_data = scaleMatrixZeroToOne(TESTING_DATA, distribution_scale)
+distribution_scaled_training_data = scaleColumns(TRAINING_DATA, distribution_scale)
+distribution_scaled_test_data = scaleColumns(TESTING_DATA, distribution_scale)
 
 # generate graphs
 generate_all_distributions(TRAINING_DATA, "unscaled_training_data")
