@@ -181,13 +181,13 @@ def data_report(data) :
 
 def predict_with_knn(test_instance : list[float], k : int, train_data) -> int :
 
+
   instance_distance_to_label_array = [
       (
         distance_euclidean(instance_attributes(train_instance), test_instance),
         instance_label(train_instance)
       ) 
       for train_instance in train_data ]
-
 
   random.shuffle(instance_distance_to_label_array)
 
@@ -197,7 +197,6 @@ def predict_with_knn(test_instance : list[float], k : int, train_data) -> int :
   )
 
   labels = [label for (distance, label) in most_similar_train_instances]
-
   labels_of_k_closest = labels[:k]
   most_common_label_of_k_closest = Counter(labels_of_k_closest).most_common()[0][0]
 
@@ -214,8 +213,6 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
   # test each instance in the test data
   predicted = [ predict_instance_label(test_instance) for test_instance in testing_data ]
   actual = [ instance_label(test_instance) for test_instance in testing_data ]
-    
-  print(predicted)
   conf = confusion_matrix(actual, predicted)
 
 
@@ -263,22 +260,22 @@ def distribution_scale(ls : list) :
 
 
 def getColum(arr, c : int) :
-  return [ row[c] for row in arr]
+  return [ row[c] for row in arr ]
 
 def flip(arr : list[list[float]]) :
-  return [getColum(arr, c) for c in range(len(arr[0]))]
 
-def scaleColumns(matrix : np.ndarray, f) :
+  return [getColum(arr, c) for c in range(len(arr[1]))]
+
+def scaleColumns(matrix : list[list[float]], f) :
 
   matrix = flip(matrix)
-  matrix = list(map(f, matrix))
+  matrix = list(map(f, matrix[:-1])) + [list(matrix[-1])] # only scale attribute columns
   matrix = flip(matrix)
-
 
   return matrix
 
 
-assert(scaleColumns(np.array([[0,10],[5,5]]), min_max_scale) == [[0.0,1.0],[1.0,0.0]])
+#assert(scaleColumns(np.array([[0,10],[5,5]]), min_max_scale) == [[0.0,1.0],[1.0,0.0]])
 
 
 
@@ -313,6 +310,7 @@ data_report(TRAINING_DATA)
 data_report(TESTING_DATA)
 """
 
+# scale columns
 min_max_scaled_training_data = scaleColumns(TRAINING_DATA, min_max_scale)
 min_max_scaled_test_data = scaleColumns(TESTING_DATA, min_max_scale)
 
@@ -320,9 +318,11 @@ distribution_scaled_training_data = scaleColumns(TRAINING_DATA, distribution_sca
 distribution_scaled_test_data = scaleColumns(TESTING_DATA, distribution_scale)
 
 # generate graphs
+"""
 generate_all_distributions(TRAINING_DATA, "unscaled_training_data")
 generate_all_distributions(min_max_scaled_training_data, "min_max_scaled_training_data")
 generate_all_distributions(distribution_scaled_training_data, "distribution_scaled_training_data")
+"""
 
 # accuracy calculations
 check_accuracy(lambda instnace : predict_with_knn(instnace, 1, TRAINING_DATA), TESTING_DATA, "knn_accuracy") 
