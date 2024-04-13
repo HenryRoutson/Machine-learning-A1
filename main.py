@@ -246,6 +246,114 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
   plt.cla()
   plt.clf()
 
+
+  # False positive and False negatives 
+
+
+  # TODO seperate false positive and false negatives
+
+
+
+  # saying positive is high quality
+  # false = 0, true = 1, negative = 0, positive = 0
+  # [[falseNegative, falsePositive],
+  #  [trueNegative,   truePositive]]
+
+  trueFalseNegativePositive = [[[],[]],[[],[]]]
+  for i, inst in enumerate(testing_data):
+
+    isTrue = int(instance_label(inst) == predicted[i])
+    isPositive = int(instance_label(inst))
+    trueFalseNegativePositive[isTrue][isPositive].append(inst)
+
+
+  
+  falsePositives = trueFalseNegativePositive[0][1]
+  falseNegatives =  trueFalseNegativePositive[0][0]
+
+    
+  for attrib_x_index, attrib_x in enumerate(ATTRIBUTES) :
+    for attrib_y_index, attrib_y in enumerate(ATTRIBUTES) :
+
+      x_high = get_column(falsePositives, attrib_x_index)
+      x_low = get_column(falseNegatives, attrib_x_index)
+
+      y_high = get_column(falsePositives, attrib_y_index) 
+      y_low =  get_column(falseNegatives, attrib_y_index) 
+
+      fig, ax = plt.subplots()
+
+      # add in not high quality
+      ax.scatter(x_low, y_low, c='green', alpha=0.3)
+      
+      # add in high quality
+      ax.scatter(x_high, y_high, c="red", alpha=0.3)
+      
+      plt.xlabel(attrib_x)
+      plt.ylabel(attrib_y)
+
+      plotTitle = "False_positive_and_False_negatives/"+prediction_name+attrib_x+attrib_y
+      plt.title(plotTitle)
+      ax.legend()
+      ax.grid(True)
+
+      plt.savefig(plotTitle)
+
+      plt.cla()
+      plt.clf()
+
+
+  # True and False
+
+
+  trueColumns = trueFalseNegativePositive[0][0] + trueFalseNegativePositive[0][0]
+  falseColumns =  trueFalseNegativePositive[1][0] + trueFalseNegativePositive[1][1]
+
+    
+  for attrib_x_index, attrib_x in enumerate(ATTRIBUTES) :
+    for attrib_y_index, attrib_y in enumerate(ATTRIBUTES) :
+
+      x_high = get_column(trueColumns, attrib_x_index)
+      x_low = get_column(falseColumns, attrib_x_index)
+
+      y_high = get_column(trueColumns, attrib_y_index) 
+      y_low =  get_column(falseColumns, attrib_y_index) 
+
+      fig, ax = plt.subplots()
+
+      # add in not high quality
+      ax.scatter(x_low, y_low, c='green', alpha=0.3)
+      
+      # add in high quality
+      ax.scatter(x_high, y_high, c="red", alpha=0.3)
+      
+      plt.xlabel(attrib_x)
+      plt.ylabel(attrib_y)
+
+      plotTitle = "False_positive_and_False_negatives/"+prediction_name
+      plt.title(plotTitle)
+      ax.legend()
+      ax.grid(True)
+
+      plt.savefig(plotTitle)
+
+      plt.cla()
+      plt.clf()
+
+
+  # True and False
+
+
+  
+
+
+
+
+
+
+  plt.cla()
+  plt.clf()
+
   return predicted
 
 
@@ -328,9 +436,11 @@ distribution_scaled_training_data = scaleColumns(TRAINING_DATA, distribution_sca
 distribution_scaled_test_data = scaleColumns(TESTING_DATA, distribution_scale)
 
 # generate graphs
+"""
 generate_all_distributions(TRAINING_DATA, "unscaled_training_data")
 generate_all_distributions(min_max_scaled_training_data, "min_max_scaled_training_data")
 generate_all_distributions(distribution_scaled_training_data, "distribution_scaled_training_data")
+"""
 
 # accuracy calculations
 knn_predicted = \
