@@ -69,7 +69,6 @@ def distance_euclidean(A : list[float], B : list[float]) -> float :
     assert(len(A) == len(B))
     return math.sqrt(sum([math.pow((t[0] - t[1]), 2) for t in zip(A, B) ]))
 
-print(distance_euclidean([60], [42]))
 assert(distance_euclidean([60], [42]) == 18.0)
 
 def instance_label(instance) -> label_t :
@@ -211,11 +210,12 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
   predicted = [ predict_instance_label(test_instance) for test_instance in testing_data ]
   actual = [ instance_label(test_instance) for test_instance in testing_data ]
     
+  print(actual, predicted)
   conf = confusion_matrix(actual, predicted)
 
 
   accur = sum(conf[i][i] for i in range(len(conf))) / sum(sum(x) for x in conf)
-  print("ACCURACY : " + str(accur))
+  print("ACCURACY : " + str(accur) + " " + prediction_name)
 
 
   # https://stackoverflow.com/questions/35572000/how-can-i-plot-a-confusion-matrix
@@ -231,7 +231,7 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
   # on the bottom is predicted
 
   sn.heatmap(conf, annot=True, fmt=".0f")
-  plt.savefig("conf")
+  plt.savefig("confusion/" + prediction_name)
 
   plt.cla()
   plt.clf()
@@ -251,9 +251,12 @@ assert(min_max_scale([5,10]) == [0,1])
 
 
 def distribution_scale(ls) :
-  # TODO
 
-  return ls
+
+  mean = sum(ls) / len(ls)
+  stddev = standardDeviation(ls)
+
+  return [(x - mean) / stddev for x in ls]
 
 
 
@@ -323,10 +326,10 @@ generate_all_distributions(TRAINING_DATA, "unscaled_training_data")
 generate_all_distributions(min_max_scaled_training_data, "min_max_scaled_training_data")
 generate_all_distributions(distribution_scaled_training_data, "distribution_scaled_training_data")
 
-#
-check_accuracy(lambda instnace : predict_with_knn(instnace, 1, TRAINING_DATA), TESTING_DATA, "knn accuracy") # TODO add in normalisation
-check_accuracy(lambda instnace : predict_with_knn(instnace, 1, min_max_scaled_training_data), min_max_scaled_test_data, "knn with normalisation") # TODO add in normalisation
-
+# accuracy calculations
+check_accuracy(lambda instnace : predict_with_knn(instnace, 1, TRAINING_DATA), TESTING_DATA, "knn_accuracy") 
+check_accuracy(lambda instnace : predict_with_knn(instnace, 1, min_max_scaled_training_data), min_max_scaled_test_data, "knn_with_min_max_normalisation") 
+check_accuracy(lambda instnace : predict_with_knn(instnace, 1, distribution_scaled_training_data), distribution_scaled_test_data, "knn_with_distribution_normalisation") 
 
 
 
