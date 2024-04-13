@@ -286,7 +286,23 @@ def scaleRange0To1(ls) :
 
 
 assert(scaleRange0To1([0,10]) == [0,1])
+assert(scaleRange0To1([5,10]) == [0,1])
 
 
 
+def getColum(arr, c : int) :
+  return [ row[c] for row in arr]
 
+def flip(arr) :
+  return [getColum(arr, c) for c in range(len(arr[0]))]
+
+def scaleMatrixZeroToOne(matrix : np.array) :
+  print(matrix)
+  matrix = flip(matrix)
+  matrix = list(map(lambda row : scaleRange0To1(row), matrix))
+  matrix = flip(matrix)
+  return matrix
+
+scaled_matrix = scaleMatrixZeroToOne(np.array([[0,10],[5,5]]))
+print(scaled_matrix)
+assert(scaled_matrix == [[0.0,1.0],[1.0,0.0]])
