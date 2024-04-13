@@ -100,7 +100,7 @@ def data_label_distrib(data) :
 def serperateLabelsLowHigh(data) :
   return [ 
    list(filter(lambda row : row[-1] == LOW_QUALITY, data)),
-   list(filter(lambda row : row[-1] == LOW_QUALITY, data))
+   list(filter(lambda row : row[-1] == HIGH_QUALITY, data))
   ]
 
 
@@ -146,6 +146,11 @@ def generate_all_scatterplots(data, data_name : str) :
 def generate_all_distributions(data, data_name : str) :
 
   [low_rows, high_rows] = serperateLabelsLowHigh(data)
+  
+  #assert(len(low_rows) != 0)
+  #assert(len(high_rows) != 0)
+  #assert(instance_label(low_rows[0]) == LOW_QUALITY)
+  #assert(instance_label(high_rows[0]) == HIGH_QUALITY)
 
   for attrib_index, attrib in enumerate(ATTRIBUTES) :
 

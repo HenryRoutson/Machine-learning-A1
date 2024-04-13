@@ -5,7 +5,7 @@ RUN
 
 
 
-distributions are wrong for dist scaled
+look at what gets classified differently between methods
 
 
 imrpove code quality
