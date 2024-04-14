@@ -247,13 +247,6 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
   plt.clf()
 
 
-  # False positive and False negatives 
-
-
-  # TODO seperate false positive and false negatives
-
-
-
   # saying positive is high quality
   # false = 0, true = 1, negative = 0, positive = 0
   # [[falseNegative, falsePositive],
@@ -294,19 +287,6 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
       plt.cla()
       plt.clf()
 
-
-  # True and False
-
-
-  
-
-
-
-
-
-
-  plt.cla()
-  plt.clf()
 
   return predicted
 
