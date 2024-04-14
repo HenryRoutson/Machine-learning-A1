@@ -74,13 +74,13 @@ def distance_euclidean(A : list[float], B : list[float]) -> float :
 assert(distance_euclidean([60], [42]) == 18.0)
 
 def instance_label(instance) -> label_t :
-  assert(len(instance) == len(ATTRIBUTES))
+  #assert(len(instance) == len(ATTRIBUTES))
   return instance[-1]
 
 ACTUAL_LABELS = [ instance_label(test_instance) for test_instance in TESTING_DATA ]
 
 def instance_attributes(instance) :
-  assert(len(instance) == len(ATTRIBUTES))
+  #assert(len(instance) == len(ATTRIBUTES))
   return instance[::-1]
 
 
@@ -350,11 +350,64 @@ def standardDeviation(ls : list[float]) :
 
 
 
+def visual_knn_test() :
+
+  plotTitle = "visual_knn_test"
+  plt.title(plotTitle)
+  plt.grid(True)
+  
+  training_data = [[-1,-1,0],[1,1,0], [0,0,1]]
+  for instance in training_data :
+
+    label = instance_label(instance)
+
+    if (label == 0) :
+      colour = "green"
+    else : 
+      colour = "black"
+    
+    plt.scatter(instance[0], instance[1], c=colour, alpha=1)
+
+
+  plt.savefig(plotTitle+"_train")
+
+
+
+  testing_data = random_array = np.random.rand(1000, 3)
+
+  # split testing_data into classifications
+
+
+  for instance in testing_data :
+
+    label = predict_with_knn(instance, 1, training_data)
+
+    if (label == 0) :
+      colour = "red"
+    else : 
+      colour = "blue"
+    
+    plt.scatter(instance[0], instance[1], c=colour, alpha=0.3)
+
+
+  
+
+  plt.savefig(plotTitle)
+
+  plt.cla()
+  plt.clf()
+
+
+
+
 
 
 ####################################################################################################################################
 # Code to run
 
+
+visual_knn_test()
+exit()
 
 # quick data summaries
 """
