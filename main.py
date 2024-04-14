@@ -272,11 +272,6 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
   
   for attrib_x_index, attrib_x in enumerate(ATTRIBUTES) : # tmp for testing
     for attrib_y_index, attrib_y in enumerate(ATTRIBUTES) :
-
-
-
-      fig, ax = plt.subplots()
-
       # add in not high quality
 
       for columns, colour, label in zip(flattened_confusion_columns, ["green", "red", "blue", "black"], flattened_confusion_columns_labels) : # TODO add labels
@@ -284,7 +279,7 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
         xs = get_column(columns, attrib_x_index)
         ys =  get_column(columns, attrib_y_index) 
 
-        ax.scatter(xs, ys, c=colour, alpha=0.3, label=f"Class {label}")
+        plt.scatter(xs, ys, c=colour, alpha=0.3, label=f"Class {label}")
 
       plt.xlabel(attrib_x)
       plt.ylabel(attrib_y)
@@ -292,7 +287,7 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
       plotTitle = "confusion_scatters/"+prediction_name+"/"+attrib_x+"_"+attrib_y
       plt.title(plotTitle)
       plt.legend()
-      ax.grid(True)
+      plt.grid(True)
 
       plt.savefig(plotTitle)
 
