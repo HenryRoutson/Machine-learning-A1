@@ -81,7 +81,7 @@ ACTUAL_LABELS = [ instance_label(test_instance) for test_instance in TESTING_DAT
 
 def instance_attributes(instance) :
   #assert(len(instance) == len(ATTRIBUTES))
-  return instance[::-1]
+  return instance[:-1]
 
 
 def attribute_distrib_summary(data) :
@@ -190,10 +190,11 @@ def data_report(data) :
 
 def predict_with_knn(test_instance : list[float], k : int, train_data) -> int :
 
+  test_instance_attributes = instance_attributes(test_instance)
 
   instance_distance_to_label_array = [
       (
-        distance_euclidean(instance_attributes(train_instance), test_instance),
+        distance_euclidean(instance_attributes(train_instance), test_instance_attributes),
         instance_label(train_instance)
       ) 
       for train_instance in train_data ]
@@ -205,8 +206,12 @@ def predict_with_knn(test_instance : list[float], k : int, train_data) -> int :
     key = lambda x : x[0] # sort only by distance, not by label
   )
 
+
+  
+
   labels = [label for (distance, label) in most_similar_train_instances]
   labels_of_k_closest = labels[:k]
+  assert(len(labels_of_k_closest) == k)
   most_common_label_of_k_closest = Counter(labels_of_k_closest).most_common()[0][0]
 
   assert(
@@ -373,29 +378,33 @@ def visual_knn_test() :
 
 
 
-  testing_data = random_array = np.random.rand(1000, 3)
 
-  # split testing_data into classifications
-
-
-  for instance in testing_data :
-
-    label = predict_with_knn(instance, 1, training_data)
-
-    if (label == 0) :
-      colour = "red"
-    else : 
-      colour = "blue"
-    
-    plt.scatter(instance[0], instance[1], c=colour, alpha=0.3)
-
-
+  testing_data_list = [
+    np.random.uniform(low=-2, high=2, size=(500, 3)),
+    [[0,0.5, None], [1,0.5, None], [1,1, None], [-1,-1,None]]
+  ]
+  
   
 
-  plt.savefig(plotTitle)
 
-  plt.cla()
-  plt.clf()
+  for i, testing_data in enumerate(testing_data_list) :
+
+    for instance in testing_data :
+
+      label = predict_with_knn(instance, 1, training_data)
+
+      if (label == 0) :
+        colour = "red"
+      elif (label == 1) :
+        colour = "blue"
+
+      
+      plt.scatter(instance[0], instance[1], c=colour, alpha=0.3)
+
+    plt.savefig(plotTitle + str(i))
+
+    plt.cla()
+    plt.clf()
 
 
 
