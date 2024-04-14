@@ -267,72 +267,30 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
     trueFalseNegativePositive[isTrue][isPositive].append(inst)
 
 
+  flattened_confusion_columns = [trueFalseNegativePositive[0][0], trueFalseNegativePositive[0][1], trueFalseNegativePositive[1][0], trueFalseNegativePositive[1][1]] # TODO get order right
+
   
-  falsePositives = trueFalseNegativePositive[0][1]
-  falseNegatives =  trueFalseNegativePositive[0][0]
-
-    
-  for attrib_x_index, attrib_x in enumerate(ATTRIBUTES) :
+  for attrib_x_index, attrib_x in enumerate(ATTRIBUTES) : # tmp for testing
     for attrib_y_index, attrib_y in enumerate(ATTRIBUTES) :
 
-      x_high = get_column(falsePositives, attrib_x_index)
-      x_low = get_column(falseNegatives, attrib_x_index)
 
-      y_high = get_column(falsePositives, attrib_y_index) 
-      y_low =  get_column(falseNegatives, attrib_y_index) 
 
       fig, ax = plt.subplots()
 
       # add in not high quality
-      ax.scatter(x_low, y_low, c='green', alpha=0.3)
-      
-      # add in high quality
-      ax.scatter(x_high, y_high, c="red", alpha=0.3)
-      
-      plt.xlabel(attrib_x)
-      plt.ylabel(attrib_y)
 
-      plotTitle = "False_positive_and_False_negatives/"+prediction_name+attrib_x+attrib_y
-      plt.title(plotTitle)
-      ax.legend()
-      ax.grid(True)
+      for columns, colour in zip(flattened_confusion_columns, ["green", "red", "blue", "black"]) : # TODO add labels
 
-      plt.savefig(plotTitle)
+        xs = get_column(columns, attrib_x_index)
+        ys =  get_column(columns, attrib_y_index) 
 
-      plt.cla()
-      plt.clf()
-
-
-  # True and False
-
-
-  trueColumns = trueFalseNegativePositive[0][0] + trueFalseNegativePositive[0][0]
-  falseColumns =  trueFalseNegativePositive[1][0] + trueFalseNegativePositive[1][1]
-
-    
-  for attrib_x_index, attrib_x in enumerate(ATTRIBUTES) :
-    for attrib_y_index, attrib_y in enumerate(ATTRIBUTES) :
-
-      x_high = get_column(trueColumns, attrib_x_index)
-      x_low = get_column(falseColumns, attrib_x_index)
-
-      y_high = get_column(trueColumns, attrib_y_index) 
-      y_low =  get_column(falseColumns, attrib_y_index) 
-
-      fig, ax = plt.subplots()
-
-      # add in not high quality
-      ax.scatter(x_low, y_low, c='green', alpha=0.3)
-      
-      # add in high quality
-      ax.scatter(x_high, y_high, c="red", alpha=0.3)
+        ax.scatter(xs, ys, c=colour, alpha=0.3)
       
       plt.xlabel(attrib_x)
       plt.ylabel(attrib_y)
 
-      plotTitle = "False_positive_and_False_negatives/"+prediction_name
+      plotTitle = "confusion_scatters/"+prediction_name+"/"+attrib_x+"_"+attrib_y
       plt.title(plotTitle)
-      ax.legend()
       ax.grid(True)
 
       plt.savefig(plotTitle)
