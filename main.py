@@ -414,9 +414,11 @@ def visual_knn_test() :
 ####################################################################################################################################
 # Code to run
 
-
+# visually test knn is correct with 2d data
+"""
 visual_knn_test()
-exit()
+"""
+
 
 # quick data summaries
 """
