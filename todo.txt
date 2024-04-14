@@ -4,6 +4,11 @@ RUN
 
 
 
+
+  create a visual knn test
+
+
+
 Change false postiive and false negative to include all quadrants
 
 why do old versions have a different confusion for normal knn?

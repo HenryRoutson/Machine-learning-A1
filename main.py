@@ -268,7 +268,7 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
 
 
   flattened_confusion_columns = [trueFalseNegativePositive[0][0], trueFalseNegativePositive[0][1], trueFalseNegativePositive[1][0], trueFalseNegativePositive[1][1]] # TODO get order right
-
+  flattened_confusion_columns_labels = ["falseNegative", "falsePositive", "trueNegative", "TruePositive"]
   
   for attrib_x_index, attrib_x in enumerate(ATTRIBUTES) : # tmp for testing
     for attrib_y_index, attrib_y in enumerate(ATTRIBUTES) :
@@ -279,18 +279,19 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
 
       # add in not high quality
 
-      for columns, colour in zip(flattened_confusion_columns, ["green", "red", "blue", "black"]) : # TODO add labels
+      for columns, colour, label in zip(flattened_confusion_columns, ["green", "red", "blue", "black"], flattened_confusion_columns_labels) : # TODO add labels
 
         xs = get_column(columns, attrib_x_index)
         ys =  get_column(columns, attrib_y_index) 
 
-        ax.scatter(xs, ys, c=colour, alpha=0.3)
-      
+        ax.scatter(xs, ys, c=colour, alpha=0.3, label=f"Class {label}")
+
       plt.xlabel(attrib_x)
       plt.ylabel(attrib_y)
 
       plotTitle = "confusion_scatters/"+prediction_name+"/"+attrib_x+"_"+attrib_y
       plt.title(plotTitle)
+      plt.legend()
       ax.grid(True)
 
       plt.savefig(plotTitle)
