@@ -4,13 +4,9 @@ RUN
 
 
 
-
-  create a visual knn test
-
+why are graphs wrong?
 
 look at what gets classified differently between methods
-
-why are graphs wrong?
 
 outline basic answers for problems in written part
 
