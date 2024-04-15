@@ -3,9 +3,6 @@ RUN
   python3 main.py
 
 
-
-why are graphs wrong?
-
 look at what gets classified differently between methods
 
 outline basic answers for problems in written part

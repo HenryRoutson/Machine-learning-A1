@@ -421,10 +421,10 @@ visual_knn_test()
 
 
 # quick data summaries
-"""
+
 data_report(TRAINING_DATA)
 data_report(TESTING_DATA)
-"""
+
 
 # scale columns
 min_max_scaled_training_data = scaleColumns(TRAINING_DATA, min_max_scale)
