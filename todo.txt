@@ -8,18 +8,7 @@ RUN
   create a visual knn test
 
 
-
-Change false postiive and false negative to include all quadrants
-
-why do old versions have a different confusion for normal knn?
-
 look at what gets classified differently between methods
-plot false positives and false negatives on scatter plot for each prediction method
-plot true and false on scatter plot
-
-
-imrpove code quality
-
 
 why are graphs wrong?
 
