@@ -317,23 +317,37 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
   return predicted
 
 
-def min_max_scale(ls) :
-  max_ls = max(ls)
-  min_ls = min(ls)
-  range_ls = max_ls - min_ls
-
-  return [(x - min_ls) / range_ls for x in ls] 
+# FROM SPEC
+"""
+Note that you should use the training dataset to get the parameters for these normalizations, and apply the same parameters to both the training and test instances (e.g., min(x) refers to the minimum value of attribute x in the training dataset; use this same minimum value when scaling attribute x in the test set).
+"""
 
 
-assert(min_max_scale([0,10]) == [0,1])
-assert(min_max_scale([5,10]) == [0,1])
+def min_max_scale_from_training(train_column : list[float]) :
+  max_train = max(train_column)
+  min_train = min(train_column)
+  range_ls = max_train - min_train
+
+  def min_max_scale(ls : list[float]) :
+    return [(x - min_train) / range_ls for x in ls] # can so all columns
+
+  return min_max_scale
 
 
 
-def distribution_scale(ls : list) :
-  mean = sum(ls) / len(ls)
-  stddev = standardDeviation(ls)
-  return [(x - mean) / stddev for x in ls]
+def distribution_scale_from_trainging(train_column  : list[float]) :
+
+  mean = sum(train_column) / len(train_column)
+  stddev = standardDeviation(train_column)
+
+  def distribution_scale(ls : list[float]) :
+    return [(x - mean) / stddev for x in ls]
+  
+  return distribution_scale
+
+# 
+
+
 
 
 
@@ -344,13 +358,24 @@ def flip(arr : list[list[float]]) :
 
   return [getColum(arr, c) for c in range(len(arr[1]))]
 
-def scaleColumns(matrix : list[list[float]], f) :
+def scaleColumns(training_data, current_data : list[list[float]], f_from_training_data) :
+  
+  
 
-  matrix = flip(matrix)
-  matrix = list(map(f, matrix[:-1])) + [list(matrix[-1])] # only scale attribute columns
-  matrix = flip(matrix)
+  current_data = flip(current_data)
+  training_data = flip(training_data)
+  
 
-  return matrix
+  for i, column in enumerate(current_data[:-1]) :
+    
+    f = f_from_training_data(training_data[i])
+    current_data[i] = f(column)
+
+
+  current_data = flip(current_data)
+  training_data = flip(training_data)
+
+  return current_data
 
 
 #assert(scaleColumns(np.array([[0,10],[5,5]]), min_max_scale) == [[0.0,1.0],[1.0,0.0]])
@@ -439,12 +464,15 @@ data_report(TRAINING_DATA)
 data_report(TESTING_DATA)
 
 
-# scale columns
-min_max_scaled_training_data = scaleColumns(TRAINING_DATA, min_max_scale)
-min_max_scaled_test_data = scaleColumns(TESTING_DATA, min_max_scale)
 
-distribution_scaled_training_data = scaleColumns(TRAINING_DATA, distribution_scale)
-distribution_scaled_test_data = scaleColumns(TESTING_DATA, distribution_scale)
+
+
+# scale columns
+min_max_scaled_training_data = scaleColumns(TRAINING_DATA, TRAINING_DATA, min_max_scale_from_training)
+min_max_scaled_test_data = scaleColumns(TRAINING_DATA, TESTING_DATA, min_max_scale_from_training)
+
+distribution_scaled_training_data = scaleColumns(TRAINING_DATA, TRAINING_DATA, distribution_scale_from_trainging)
+distribution_scaled_test_data = scaleColumns(TRAINING_DATA, TESTING_DATA, distribution_scale_from_trainging)
 
 # generate graphs
 generate_all_distributions(TRAINING_DATA, "unscaled_training_data")
@@ -452,17 +480,14 @@ generate_all_distributions(min_max_scaled_training_data, "min_max_scaled_trainin
 generate_all_distributions(distribution_scaled_training_data, "distribution_scaled_training_data")
 generate_all_scatterplots(TRAINING_DATA, "training_data")
 
+
 # accuracy calculations
-knn_predicted = \
-  check_accuracy(lambda instnace : predict_with_knn(instnace, 1, TRAINING_DATA), TESTING_DATA, "knn") 
-knn_with_min_max_normalisation_predicted = \
-  check_accuracy(lambda instnace : predict_with_knn(instnace, 1, min_max_scaled_training_data), min_max_scaled_test_data, "knn_with_min_max_normalisation") 
-knn_with_distribution_normalisation_predicted = \
-  check_accuracy(lambda instnace : predict_with_knn(instnace, 1, distribution_scaled_training_data), distribution_scaled_test_data, "knn_with_distribution_normalisation") 
+knn_predicted = check_accuracy(lambda instnace : predict_with_knn(instnace, 1, TRAINING_DATA), TESTING_DATA, "knn") 
+knn_with_min_max_normalisation_predicted = check_accuracy(lambda instnace : predict_with_knn(instnace, 1, min_max_scaled_training_data), min_max_scaled_test_data, "knn_with_min_max_normalisation") 
+knn_with_distribution_normalisation_predicted = check_accuracy(lambda instnace : predict_with_knn(instnace, 1, distribution_scaled_training_data), distribution_scaled_test_data, "knn_with_distribution_normalisation") 
 
 # test knn 1+ works
-knn_10_predicted = \
-  check_accuracy(lambda instnace : predict_with_knn(instnace, 10, TRAINING_DATA), TESTING_DATA, "knn10") 
+#knn_10_predicted = check_accuracy(lambda instnace : predict_with_knn(instnace, 10, TRAINING_DATA), TESTING_DATA, "knn10") 
 
 
 
