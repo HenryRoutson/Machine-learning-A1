@@ -73,9 +73,18 @@ def distance_euclidean(A : list[float], B : list[float]) -> float :
 
 assert(distance_euclidean([60], [42]) == 18.0)
 
+def isValidLabel(label) :
+  assert(
+    (label == HIGH_QUALITY) or 
+    (label == LOW_QUALITY) 
+  )
+
 def instance_label(instance) -> label_t :
   #assert(len(instance) == len(ATTRIBUTES))
-  return instance[-1]
+  
+  label = instance[-1]
+  isValidLabel(label)
+  return label
 
 ACTUAL_LABELS = [ instance_label(test_instance) for test_instance in TESTING_DATA ]
 
@@ -185,8 +194,7 @@ def data_report(data) :
   print()
   print("DATA REPORT END ========================")
 
-
-
+import copy
 
 def predict_with_knn(test_instance : list[float], k : int, train_data) -> int :
 
@@ -206,18 +214,24 @@ def predict_with_knn(test_instance : list[float], k : int, train_data) -> int :
     key = lambda x : x[0] # sort only by distance, not by label
   )
 
-
-  
-
   labels = [label for (distance, label) in most_similar_train_instances]
   labels_of_k_closest = labels[:k]
-  assert(len(labels_of_k_closest) == k)
-  most_common_label_of_k_closest = Counter(labels_of_k_closest).most_common()[0][0]
 
-  assert(
-    (most_common_label_of_k_closest == HIGH_QUALITY) or 
-    (most_common_label_of_k_closest == LOW_QUALITY) 
-  )
+  counter = Counter(labels_of_k_closest)
+  max_frequency = max(counter.values())
+  most_frequent = list(filter(lambda keyValueTuple : keyValueTuple[1] == max_frequency, list(counter.items())))
+  print(counter, max_frequency)
+  print(most_frequent)
+  print()
+
+  for i,keyValue in enumerate(most_frequent) :
+    assert(keyValue[1] == most_frequent[0][1])
+
+  random.shuffle(most_frequent)
+  most_common_label_of_k_closest = most_frequent[0][0]
+
+
+  isValidLabel(most_common_label_of_k_closest)
 
   return most_common_label_of_k_closest
 
@@ -369,33 +383,36 @@ def visual_knn_test() :
   training_data_list = [
     [[-1,-1,0],[1,1,0], [0,0,1]],
     [[-1,1,0],[1,1,0], [0,1,1]],
-    [[1,1,0],[-1,-1,0], [-1,1,1], [1,-1,1]]
+    [[1,1,0],[-1,-1,0], [-1,1,1], [1,-1,1]],
+    [[-1,0,0],[1,0,0], [0,1,1], [0,1,1]]
   ]
 
-  for train_i, training_data in enumerate(training_data_list) :
-    for test_i, testing_data in enumerate(testing_data_list) :
+  for k in [1,2] : 
+    for train_i, training_data in enumerate(training_data_list) :
+      for test_i, testing_data in enumerate(testing_data_list) :
 
-      for instance in training_data :
-        label = instance_label(instance)
-        if (label == 0) :
-          colour = "green"
-        else : 
-          colour = "black"
-        plt.scatter(instance[0], instance[1], c=colour, alpha=1)
-    
+        for instance in training_data :
+          label = instance_label(instance)
+          if (label == 0) :
+            colour = "green"
+          else : 
+            colour = "black"
+          plt.scatter(instance[0], instance[1], c=colour, alpha=1)
+      
 
-      for instance in testing_data :
-        label = predict_with_knn(instance, 1, training_data)
-        if (label == 0) :
-          colour = "red"
-        elif (label == 1) :
-          colour = "blue"
+        for instance in testing_data :
+          label = predict_with_knn(instance, k, training_data)
+          if (label == 0) :
+            colour = "red"
+          elif (label == 1) :
+            colour = "blue"
+          
 
-        plt.scatter(instance[0], instance[1], c=colour, alpha=0.3)
+          plt.scatter(instance[0], instance[1], c=colour, alpha=0.3)
 
-      plt.savefig(plotTitle + str(train_i) + "_" + str(test_i))
-      plt.cla()
-      plt.clf()
+        plt.savefig(plotTitle + str(k) + str(train_i) + "_" + str(test_i))
+        plt.cla()
+        plt.clf()
 
 
 
@@ -436,6 +453,10 @@ knn_with_min_max_normalisation_predicted = \
   check_accuracy(lambda instnace : predict_with_knn(instnace, 1, min_max_scaled_training_data), min_max_scaled_test_data, "knn_with_min_max_normalisation") 
 knn_with_distribution_normalisation_predicted = \
   check_accuracy(lambda instnace : predict_with_knn(instnace, 1, distribution_scaled_training_data), distribution_scaled_test_data, "knn_with_distribution_normalisation") 
+
+# test knn 1+ works
+knn_10_predicted = \
+  check_accuracy(lambda instnace : predict_with_knn(instnace, 10, TRAINING_DATA), TESTING_DATA, "knn10") 
 
 
 

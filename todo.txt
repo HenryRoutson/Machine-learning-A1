@@ -3,6 +3,32 @@ RUN
   python3 main.py
 
 
+
+
+FIX BUG
+most common
+[0, 1] Counter({0: 1, 1: 1})
+most common
+[0, 2] Counter({0: 2})
+most common
+Traceback (most recent call last):
+  File "/Users/henry/Library/Mobile Documents/com~apple~CloudDocs/Subjects/ML/Machine Learning A1/main.py", line 419, in <module>
+    visual_knn_test()
+  File "/Users/henry/Library/Mobile Documents/com~apple~CloudDocs/Subjects/ML/Machine Learning A1/main.py", line 398, in visual_knn_test
+    label = predict_with_knn(instance, k, training_data)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/henry/Library/Mobile Documents/com~apple~CloudDocs/Subjects/ML/Machine Learning A1/main.py", line 228, in predict_with_knn
+    isValidLabel(most_common_label_of_k_closest)
+  File "/Users/henry/Library/Mobile Documents/com~apple~CloudDocs/Subjects/ML/Machine Learning A1/main.py", line 77, in isValidLabel
+    assert(
+AssertionError
+
+
+
+
+
+
+
 look at what gets classified differently between methods
 
 outline basic answers for problems in written part
