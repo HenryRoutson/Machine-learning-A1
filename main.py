@@ -25,6 +25,9 @@ TRAINING_DATA = np.loadtxt(TRAIN_PATH, delimiter=",", dtype=float, skiprows=1)
 
 TESTING_DATA  = np.loadtxt(TEST_PATH,  delimiter=",", dtype=float, skiprows=1)
 
+LOW_QUALITY_COLOR = "blue"
+HIGH_QUALITY_COLOR = "red"
+
 
 ATTRIBUTES = [
     'fixedAcidity',
@@ -67,6 +70,7 @@ label_t = int
 ####################################################################################################################################
 # Functions
 
+# use Euclidean distance to measure the similarity between instances
 def distance_euclidean(A : list[float], B : list[float]) -> float :
     assert(len(A) == len(B))
     return math.sqrt(sum([math.pow((t[0] - t[1]), 2) for t in zip(A, B) ]))
@@ -136,15 +140,15 @@ def generate_all_scatterplots(data, data_name : str) :
       y_low =  get_column(low_rows, attrib_y_index) 
 
       # add in not high quality
-      ax.scatter(x_low, y_low, c='red', alpha=0.3)
+      ax.scatter(x_low, y_low, c=LOW_QUALITY_COLOR, alpha=0.3)
       
       # add in high quality
-      ax.scatter(x_high, y_high, c="blue", alpha=0.3)
+      ax.scatter(x_high, y_high, c=HIGH_QUALITY_COLOR, alpha=0.3)
       
       plt.xlabel(attrib_x)
       plt.ylabel(attrib_y)
 
-      plotTitle = attrib_x + "vs" + attrib_y
+      plotTitle = "Scatter plot of " + attrib_x + " and " + attrib_y
       plt.title(plotTitle)
       ax.legend()
       ax.grid(True)
@@ -177,8 +181,10 @@ def generate_all_distributions(data, data_name : str) :
     plt.xlabel(attrib)
     plt.ylabel("frequency")
 
-    plt.hist([high_values, low_values], bins=20, label=['high_values', 'low_values'], color=["red", "blue"])
+    plt.title("Histogram of " + attrib)
+    plt.hist([high_values, low_values], bins=20, label=['high_values', 'low_values'], color=[HIGH_QUALITY_COLOR, LOW_QUALITY_COLOR])
     plt.savefig("hist_distributions/"+data_name +"/"+attrib)
+    plt.legend()
 
 
     plt.cla()
@@ -441,11 +447,10 @@ distribution_scaled_training_data = scaleColumns(TRAINING_DATA, distribution_sca
 distribution_scaled_test_data = scaleColumns(TESTING_DATA, distribution_scale)
 
 # generate graphs
-"""
 generate_all_distributions(TRAINING_DATA, "unscaled_training_data")
 generate_all_distributions(min_max_scaled_training_data, "min_max_scaled_training_data")
 generate_all_distributions(distribution_scaled_training_data, "distribution_scaled_training_data")
-"""
+generate_all_scatterplots(TRAINING_DATA, "training_data")
 
 # accuracy calculations
 knn_predicted = \
