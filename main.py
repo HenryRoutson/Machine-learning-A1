@@ -360,51 +360,42 @@ def visual_knn_test() :
   plotTitle = "visual_knn_test"
   plt.title(plotTitle)
   plt.grid(True)
-  
-  training_data = [[-1,-1,0],[1,1,0], [0,0,1]]
-  for instance in training_data :
-
-    label = instance_label(instance)
-
-    if (label == 0) :
-      colour = "green"
-    else : 
-      colour = "black"
-    
-    plt.scatter(instance[0], instance[1], c=colour, alpha=1)
-
-
-  plt.savefig(plotTitle+"_train")
-
-
-
 
   testing_data_list = [
     np.random.uniform(low=-2, high=2, size=(500, 3)),
-    [[0,0.5, None], [1,0.5, None], [1,1, None], [-1,-1,None]]
+    #[[0,0.5, None], [1,0.5, None], [1,1, None], [-1,-1,None]] # tests that the test labels aren't being used
   ]
   
-  
+  training_data_list = [
+    [[-1,-1,0],[1,1,0], [0,0,1]],
+    [[-1,1,0],[1,1,0], [0,1,1]],
+    [[1,1,0],[-1,-1,0], [-1,1,1], [1,-1,1]]
+  ]
 
+  for train_i, training_data in enumerate(training_data_list) :
+    for test_i, testing_data in enumerate(testing_data_list) :
 
-  for i, testing_data in enumerate(testing_data_list) :
+      for instance in training_data :
+        label = instance_label(instance)
+        if (label == 0) :
+          colour = "green"
+        else : 
+          colour = "black"
+        plt.scatter(instance[0], instance[1], c=colour, alpha=1)
+    
 
-    for instance in testing_data :
+      for instance in testing_data :
+        label = predict_with_knn(instance, 1, training_data)
+        if (label == 0) :
+          colour = "red"
+        elif (label == 1) :
+          colour = "blue"
 
-      label = predict_with_knn(instance, 1, training_data)
+        plt.scatter(instance[0], instance[1], c=colour, alpha=0.3)
 
-      if (label == 0) :
-        colour = "red"
-      elif (label == 1) :
-        colour = "blue"
-
-      
-      plt.scatter(instance[0], instance[1], c=colour, alpha=0.3)
-
-    plt.savefig(plotTitle + str(i))
-
-    plt.cla()
-    plt.clf()
+      plt.savefig(plotTitle + str(train_i) + "_" + str(test_i))
+      plt.cla()
+      plt.clf()
 
 
 
@@ -415,9 +406,7 @@ def visual_knn_test() :
 # Code to run
 
 # visually test knn is correct with 2d data
-"""
 visual_knn_test()
-"""
 
 
 # quick data summaries
