@@ -198,6 +198,8 @@ import copy
 
 def predict_with_knn(test_instance : list[float], k : int, train_data) -> int :
 
+  assert(len(train_data) != 0)
+
   test_instance_attributes = instance_attributes(test_instance)
 
   instance_distance_to_label_array = [
@@ -207,33 +209,32 @@ def predict_with_knn(test_instance : list[float], k : int, train_data) -> int :
       ) 
       for train_instance in train_data ]
 
-  random.shuffle(instance_distance_to_label_array)
+  
 
   most_similar_train_instances = sorted(
-    instance_distance_to_label_array, # randmise order
+    instance_distance_to_label_array,
     key = lambda x : x[0] # sort only by distance, not by label
   )
 
+  # use majority vote to choose the label when K is greater than 1 
   labels = [label for (distance, label) in most_similar_train_instances]
   labels_of_k_closest = labels[:k]
-
   counter = Counter(labels_of_k_closest)
   max_frequency = max(counter.values())
   most_frequent = list(filter(lambda keyValueTuple : keyValueTuple[1] == max_frequency, list(counter.items())))
-  print(counter, max_frequency)
-  print(most_frequent)
-  print()
+  label = most_frequent[0][0]
+  isValidLabel(label)
 
-  for i,keyValue in enumerate(most_frequent) :
-    assert(keyValue[1] == most_frequent[0][1])
+  # if majority vote results in a tie, tie break by taking the label of the 1-NN 
+  if len(most_frequent) > 1 :
 
-  random.shuffle(most_frequent)
-  most_common_label_of_k_closest = most_frequent[0][0]
-
-
-  isValidLabel(most_common_label_of_k_closest)
-
-  return most_common_label_of_k_closest
+    # if there is a tie due to 2 or more instances having exactly the same distance, tie break by choosing randomly among these
+    closest_distance = max([dist for (dist, label) in instance_distance_to_label_array])
+    closest = list(filter(lambda keyValueTuple : keyValueTuple[0] == closest_distance, instance_distance_to_label_array))
+    random.shuffle(closest)
+    return closest[0][1]
+  
+  return label
 
 
 def check_accuracy(predict_instance_label : Callable[[list[float]], int], testing_data , prediction_name : str) :
