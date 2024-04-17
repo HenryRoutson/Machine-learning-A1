@@ -327,9 +327,9 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
   flattened_confusion_columns = [trueFalseNegativePositive[0][0], trueFalseNegativePositive[0][1], trueFalseNegativePositive[1][0], trueFalseNegativePositive[1][1]] # TODO get order right
   flattened_confusion_columns_labels = ["falseNegative", "falsePositive", "trueNegative", "TruePositive"]
   
-  for attrib_x_index, attrib_x in enumerate(ATTRIBUTES) : # tmp for testing
+  # create all possible combinations of attributes
+  for attrib_x_index, attrib_x in enumerate(ATTRIBUTES) :
     for attrib_y_index, attrib_y in enumerate(ATTRIBUTES) :
-      # add in not high quality
 
       for columns, colour, label in zip(flattened_confusion_columns, ["green", "red", "blue", "black"], flattened_confusion_columns_labels) : # TODO add labels
 
@@ -360,6 +360,8 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
 Note that you should use the training dataset to get the parameters for these normalizations, and apply the same parameters to both the training and test instances (e.g., min(x) refers to the minimum value of attribute x in the training dataset; use this same minimum value when scaling attribute x in the test set).
 """
 
+
+# create a scale function for each column
 
 def min_max_scale_from_training(train_column : list[float]) :
   max_train = max(train_column)
@@ -414,7 +416,8 @@ def flip(arr : list[list[float]]) :
 def scaleColumns(training_data, current_data : list[list[float]], f_from_training_data) :
   
   
-
+  # flip to map columns rather than rows
+  
   current_data = flip(current_data)
   training_data = flip(training_data)
   
@@ -431,16 +434,8 @@ def scaleColumns(training_data, current_data : list[list[float]], f_from_trainin
   return current_data
 
 
-#assert(scaleColumns(np.array([[0,10],[5,5]]), min_max_scale) == [[0.0,1.0],[1.0,0.0]])
 
-
-
-
-
-
-
-
-
+# visually see if knn is working with a 2d scatter plot
 def visual_knn_test() :
 
   plotTitle = "visual_knn_test"
