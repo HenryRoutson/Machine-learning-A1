@@ -267,6 +267,7 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
   # on the bottom is predicted
 
   sn.heatmap(conf, annot=True, fmt=".0f")
+  plt.title("Confusion matrix for " + prediction_name)
   plt.savefig("confusion/" + prediction_name)
 
   plt.cla()
@@ -329,19 +330,34 @@ def min_max_scale_from_training(train_column : list[float]) :
   range_ls = max_train - min_train
 
   def min_max_scale(ls : list[float]) :
-    return [(x - min_train) / range_ls for x in ls] # can so all columns
+    return [(x - min_train) / range_ls for x in ls]
 
   return min_max_scale
 
 
 
+
+
+def mean(ls : list[float]) : 
+  return sum(ls) / len(ls)
+
+
+def variance(ls : list[float]) : 
+  m = mean(ls)
+  return sum([math.pow((x - m), 2) / len(ls) for x in ls])
+
+
+def standardDeviation(ls : list[float]) :
+  return math.sqrt(variance(ls))
+
+
 def distribution_scale_from_trainging(train_column  : list[float]) :
 
-  mean = sum(train_column) / len(train_column)
-  stddev = standardDeviation(train_column)
+  mean_train = mean(train_column)
+  stddev_train = standardDeviation(train_column)
 
   def distribution_scale(ls : list[float]) :
-    return [(x - mean) / stddev for x in ls]
+    return [(x - mean_train) / stddev_train for x in ls]
   
   return distribution_scale
 
@@ -381,19 +397,6 @@ def scaleColumns(training_data, current_data : list[list[float]], f_from_trainin
 #assert(scaleColumns(np.array([[0,10],[5,5]]), min_max_scale) == [[0.0,1.0],[1.0,0.0]])
 
 
-
-def mean(ls : list[float]) : 
-  # TODO is this the right formula
-  return sum(ls) / len(ls)
-
-
-def variance(ls : list[float]) : 
-  m = mean(ls)
-  return sum([math.pow((x - m), 2) / len(ls) for x in ls])
-
-
-def standardDeviation(ls : list[float]) :
-  return math.sqrt(variance(ls))
 
 
 
