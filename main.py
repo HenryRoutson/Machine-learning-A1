@@ -500,7 +500,10 @@ visual_knn_test()
 
 # quick data summaries
 
+print("trainging data report")
 data_report(TRAINING_DATA)
+
+print("testing data report")
 data_report(TESTING_DATA)
 
 
@@ -529,10 +532,6 @@ knn_with_distribution_normalisation_predicted = check_accuracy(lambda instnace :
 # test knn 1+ works
 #knn_10_predicted = check_accuracy(lambda instnace : predict_with_knn(instnace, 10, TRAINING_DATA), TESTING_DATA, "knn10") 
 
-
-
-
-# TODO compare predicted
 
 
 
