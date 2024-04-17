@@ -267,6 +267,10 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
   # on the bottom is predicted
 
   sn.heatmap(conf, annot=True, fmt=".0f")
+
+  plt.xlabel("predicted")
+  plt.ylabel("actual")
+
   plt.title("Confusion matrix for " + prediction_name)
   plt.savefig("confusion/" + prediction_name)
 
@@ -327,10 +331,10 @@ Note that you should use the training dataset to get the parameters for these no
 def min_max_scale_from_training(train_column : list[float]) :
   max_train = max(train_column)
   min_train = min(train_column)
-  range_ls = max_train - min_train
+  range_train = max_train - min_train
 
   def min_max_scale(ls : list[float]) :
-    return [(x - min_train) / range_ls for x in ls]
+    return [(x - min_train) / range_train for x in ls]
 
   return min_max_scale
 
