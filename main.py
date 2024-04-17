@@ -126,12 +126,15 @@ def get_column(rows, index) :
 
 def generate_all_scatterplots(data, data_name : str) :
 
+  plt.cla()
+  plt.clf()
+
   [low_rows, high_rows] = serperateLabelsLowHigh(data)
 
   for attrib_x_index, attrib_x in enumerate(ATTRIBUTES) :
     for attrib_y_index, attrib_y in enumerate(ATTRIBUTES) :
 
-      fig, ax = plt.subplots()
+
 
       x_high = get_column(high_rows, attrib_x_index)
       x_low = get_column(low_rows, attrib_x_index)
@@ -140,18 +143,18 @@ def generate_all_scatterplots(data, data_name : str) :
       y_low =  get_column(low_rows, attrib_y_index) 
 
       # add in not high quality
-      ax.scatter(x_low, y_low, c=LOW_QUALITY_COLOR, alpha=0.3)
+      plt.scatter(x_low, y_low, c=LOW_QUALITY_COLOR, alpha=0.3, label = "Low quality")
       
       # add in high quality
-      ax.scatter(x_high, y_high, c=HIGH_QUALITY_COLOR, alpha=0.3)
+      plt.scatter(x_high, y_high, c=HIGH_QUALITY_COLOR, alpha=0.3, label = "High quality")
       
       plt.xlabel(attrib_x)
       plt.ylabel(attrib_y)
 
       plotTitle = "Scatter plot of " + attrib_x + " and " + attrib_y
       plt.title(plotTitle)
-      ax.legend()
-      ax.grid(True)
+      plt.legend()
+      plt.grid(True)
 
       plt.savefig("graphs/"+data_name +"/"+plotTitle)
 
@@ -183,12 +186,38 @@ def generate_all_distributions(data, data_name : str) :
 
     plt.title("Histogram of " + attrib)
     plt.hist([high_values, low_values], bins=20, label=['high_values', 'low_values'], color=[HIGH_QUALITY_COLOR, LOW_QUALITY_COLOR])
-    plt.savefig("hist_distributions/"+data_name +"/"+attrib)
     plt.legend()
-
+    plt.savefig("hist_distributions/"+data_name +"/"+attrib)
 
     plt.cla()
     plt.clf()
+
+
+
+
+def generate_predicted_hist(predicted_list : list[int], string) :
+
+
+  actual_list = [int(instance_label(instance)) for instance in TRAINING_DATA]
+  predicted_list = [int(label) for label in predicted_list]
+
+  plt.cla()
+  plt.clf()
+
+  plt.xlabel("quality")
+  plt.ylabel("frequency")
+
+  plt.title("Histogram of quality precicted by " + string)
+
+  plt.tight_layout()
+  plt.hist([actual_list, predicted_list], bins=20, label=['actual', 'predicted'], color=["orange", "green"])
+  plt.legend()
+  plt.savefig("predicted_hists/"+string)
+
+
+
+  plt.cla()
+  plt.clf()
 
 
 def data_report(data) :
@@ -249,9 +278,11 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
   predicted = [ predict_instance_label(test_instance) for test_instance in testing_data ]
   conf = confusion_matrix(ACTUAL_LABELS, predicted)
 
+  generate_predicted_hist(predicted, prediction_name)
+
 
   accur = sum(conf[i][i] for i in range(len(conf))) / sum(sum(x) for x in conf)
-  print("ACCURACY : " + str(accur) + " " + prediction_name)
+  print("ACCURACY : " + str(accur) + " " + prediction_name, Counter(predicted))
 
 
   # https://stackoverflow.com/questions/35572000/how-can-i-plot-a-confusion-matrix
@@ -276,6 +307,8 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
 
   plt.cla()
   plt.clf()
+
+ 
 
 
   # saying positive is high quality
