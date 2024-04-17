@@ -1,4 +1,20 @@
 
+
+
+"""
+Hello, 
+If you have any issues with the ipynb,
+try running main.py
+
+
+"""
+
+
+
+
+
+
+
 import numpy as np
 import sklearn
 import scipy
@@ -417,7 +433,7 @@ def scaleColumns(training_data, current_data : list[list[float]], f_from_trainin
   
   
   # flip to map columns rather than rows
-  
+
   current_data = flip(current_data)
   training_data = flip(training_data)
   
