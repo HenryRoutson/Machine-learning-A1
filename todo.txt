@@ -1,31 +1,3 @@
 
-RUN
-  python3 main.py
 
-
-
-
-
-    visual_knn_test()
-  File "/Users/henry/Library/Mobile Documents/com~apple~CloudDocs/Subjects/ML/Machine Learning A1/main.py", line 403, in visual_knn_test
-    label = predict_with_knn(instance, k, training_data)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/henry/Library/Mobile Documents/com~apple~CloudDocs/Subjects/ML/Machine Learning A1/main.py", line 233, in predict_with_knn
-    return closest[0][1]
-           ~~~~~~~^^^
-IndexError: list index out of range
-
-
-
-
-
-
-
-
-
-
-
-look at what gets classified differently between methods
-
-outline basic answers for problems in written part
 
