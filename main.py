@@ -292,14 +292,18 @@ def check_accuracy(predict_instance_label : Callable[[list[float]], int], testin
 
   # test each instance in the test data
   predicted = [ predict_instance_label(test_instance) for test_instance in testing_data ]
+  actual =  [ instance_label(test_instance) for test_instance in testing_data ]
+
   conf = confusion_matrix(ACTUAL_LABELS, predicted)
 
   generate_predicted_hist(predicted, prediction_name)
 
 
   accur = sum(conf[i][i] for i in range(len(conf))) / sum(sum(x) for x in conf)
-  print("ACCURACY : " + str(accur) + " " + prediction_name, Counter(predicted))
-
+  print("ACCURACY : " + str(accur) + " " + prediction_name)
+  print("     Class 0 : ", str(Counter(predicted)[0] / len(predicted))[:5])
+  print("     Class 1 : ", str(Counter(predicted)[1] / len(predicted))[:5])
+  print("     bias to class 1 ", str((Counter(predicted)[1] / len(predicted)) - (Counter(actual)[1] / len(predicted)))[:5])
 
   # https://stackoverflow.com/questions/35572000/how-can-i-plot-a-confusion-matrix
 
@@ -506,19 +510,19 @@ def visual_knn_test() :
 # Code to run
 
 # visually test knn is correct with 2d data
+"""
 visual_knn_test()
+"""
 
 
 # quick data summaries
-
+"""
 print("trainging data report")
 data_report(TRAINING_DATA)
 
 print("testing data report")
 data_report(TESTING_DATA)
-
-
-
+"""
 
 
 # scale columns
@@ -529,16 +533,25 @@ distribution_scaled_training_data = scaleColumns(TRAINING_DATA, TRAINING_DATA, d
 distribution_scaled_test_data = scaleColumns(TRAINING_DATA, TESTING_DATA, distribution_scale_from_trainging)
 
 # generate graphs
+"""
 generate_all_distributions(TRAINING_DATA, "unscaled_training_data")
 generate_all_distributions(min_max_scaled_training_data, "min_max_scaled_training_data")
 generate_all_distributions(distribution_scaled_training_data, "distribution_scaled_training_data")
 generate_all_scatterplots(TRAINING_DATA, "training_data")
-
+"""
 
 # accuracy calculations
-knn_predicted = check_accuracy(lambda instnace : predict_with_knn(instnace, 1, TRAINING_DATA), TESTING_DATA, "knn") 
-knn_with_min_max_normalisation_predicted = check_accuracy(lambda instnace : predict_with_knn(instnace, 1, min_max_scaled_training_data), min_max_scaled_test_data, "knn_with_min_max_normalisation") 
-knn_with_distribution_normalisation_predicted = check_accuracy(lambda instnace : predict_with_knn(instnace, 1, distribution_scaled_training_data), distribution_scaled_test_data, "knn_with_distribution_normalisation") 
+
+for k in range(1,6) :
+
+  print("k = ", k)
+  knn_predicted = check_accuracy(lambda instnace : predict_with_knn(instnace, k, TRAINING_DATA), TESTING_DATA, "knn") 
+  knn_with_min_max_normalisation_predicted = check_accuracy(lambda instnace : predict_with_knn(instnace, k, min_max_scaled_training_data), min_max_scaled_test_data, "knn_with_min_max_normalisation") 
+  knn_with_distribution_normalisation_predicted = check_accuracy(lambda instnace : predict_with_knn(instnace, k, distribution_scaled_training_data), distribution_scaled_test_data, "knn_with_distribution_normalisation") 
+
+
+
+
 
 # test knn 1+ works
 #knn_10_predicted = check_accuracy(lambda instnace : predict_with_knn(instnace, 10, TRAINING_DATA), TESTING_DATA, "knn10") 
